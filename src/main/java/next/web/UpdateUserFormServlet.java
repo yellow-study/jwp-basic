@@ -1,7 +1,7 @@
 package next.web;
 
-import core.db.DataBase;
 import next.model.User;
+import next.service.UserService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -16,10 +16,18 @@ import java.io.IOException;
  */
 @WebServlet("/user/update")
 public class UpdateUserFormServlet extends HttpServlet {
+    private UserService userService;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        userService = new UserService();
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("userId");
-        req.setAttribute("user", DataBase.findUserById(userId));
+        req.setAttribute("user", userService.getUser(userId));
 
         RequestDispatcher rd = req.getRequestDispatcher("/user/update.jsp");
         rd.forward(req, resp);
@@ -31,14 +39,10 @@ public class UpdateUserFormServlet extends HttpServlet {
                 req.getParameter("password"),
                 req.getParameter("name"),
                 req.getParameter("email")
-                );
+        );
 
-        if (DataBase.findUserById(user.getUserId()) == null) {
-            resp.getOutputStream().write("fail".getBytes());
-            return;
-        }
+        userService.updateUser(user);
 
-        DataBase.updateUser(user);
         resp.sendRedirect("/user/list");
     }
 }

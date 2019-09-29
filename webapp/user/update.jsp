@@ -72,7 +72,8 @@
             <form name="question" method="post" action="/user/update">
                 <div class="form-group">
                     <label for="userId">userId</label>
-                    <input class="form-control" id="userId" name="userId" disabled value="${user.userId}" placeholder="User ID">
+                    ${user.userId}
+                    <input class="form-control" id="userId" name="userId" type="hidden" value="${user.userId}" placeholder="User ID">
                 </div>
                 <div class="form-group">
                     <label for="password">password</label>
