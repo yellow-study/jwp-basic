@@ -1,8 +1,6 @@
 package next.user.web;
 
-import core.db.DataBase;
 import lombok.extern.slf4j.Slf4j;
-import next.user.model.User;
 import next.user.service.UserService;
 
 import javax.servlet.RequestDispatcher;
