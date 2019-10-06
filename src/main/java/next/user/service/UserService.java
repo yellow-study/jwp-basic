@@ -3,8 +3,9 @@ package next.user.service;
 import core.db.DataBase;
 import lombok.extern.slf4j.Slf4j;
 import next.user.model.User;
+import org.apache.commons.lang3.StringUtils;
 
-import javax.xml.crypto.Data;
+import java.util.Optional;
 
 /**
  * Created by juhyung0818@naver.com on 2019. 10. 6.
@@ -21,6 +22,12 @@ public class UserService {
             throw new IllegalArgumentException("user is not exist. user " + user);
         }
 
-        DataBase.updateUser(user);
+        DataBase.addUser(user);
+    }
+
+    public boolean login(String userId, String password) {
+        return Optional.ofNullable(DataBase.findUserById(userId))
+                .filter(user -> StringUtils.equals(password, user.getPassword()))
+                .isPresent();
     }
 }
