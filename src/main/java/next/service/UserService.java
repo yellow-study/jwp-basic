@@ -2,6 +2,9 @@ package next.service;
 
 import core.db.DataBase;
 import next.model.User;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Optional;
 
 /**
  * Created by juhyung0818@naver.com on 2019. 9. 26.
@@ -17,5 +20,10 @@ public class UserService {
         }
 
         DataBase.updateUser(user);
+    }
+
+    public Optional<User> login(String userId, String password) {
+        return Optional.ofNullable(getUser(userId))
+                       .filter(user -> StringUtils.equals(password, user.getPassword()));
     }
 }
