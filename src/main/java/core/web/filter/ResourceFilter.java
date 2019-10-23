@@ -14,20 +14,24 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @WebFilter("/*")
 public class ResourceFilter implements Filter {
     private static final Logger logger = LoggerFactory.getLogger(ResourceFilter.class);
-    private static final List<String> resourcePrefixs = new ArrayList<>();
-    static {
-        resourcePrefixs.add("/css");
-        resourcePrefixs.add("/js");
-        resourcePrefixs.add("/fonts");
-        resourcePrefixs.add("/images");
-        resourcePrefixs.add("/favicon.ico");
-    }
+    private static final List<String> resourcePrefixs = Lists.newArrayList(
+            "/css",
+            "/js",
+            "/fonts",
+            "/images",
+            "favicon.ico"
+    );
+    private static final List<String> resourceSuffixs = Lists.newArrayList(
+            ".jsp",
+            ".html"
+    );
 
     private RequestDispatcher defaultRequestDispatcher;
 
@@ -52,6 +56,12 @@ public class ResourceFilter implements Filter {
     private boolean isResourceUrl(String url) {
         for (String prefix : resourcePrefixs) {
             if (url.startsWith(prefix)) {
+                return true;
+            }
+        }
+
+        for (String suffix : resourceSuffixs) {
+            if (url.endsWith(suffix)) {
                 return true;
             }
         }
