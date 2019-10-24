@@ -35,7 +35,7 @@ public class UpdateUserFormServlet extends HttpServlet {
                 RequestDispatcher rd = req.getRequestDispatcher("/user/update.jsp");
                 rd.forward(req, resp);
             } else {
-                resp.sendRedirect("/user/login.html");
+                resp.sendRedirect("/user/login");
             }
 
         }
