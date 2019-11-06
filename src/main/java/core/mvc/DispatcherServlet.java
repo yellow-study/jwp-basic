@@ -14,35 +14,48 @@ import java.io.IOException;
 
 @WebServlet(name = "dispatcher", urlPatterns = "/", loadOnStartup = 1)
 public class DispatcherServlet extends HttpServlet {
-    private static final Logger LOGGER = LoggerFactory.getLogger("DispatcherServlet");
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
+	private static final Logger LOGGER = LoggerFactory.getLogger("DispatcherServlet");
+	private static final String DEFAULT_REDIRECT_PREFIX = "redirect:";
 
-    @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String requestUrl = req.getRequestURI();
+	@Override
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String requestUrl = req.getRequestURI();
 
-        Controller controller = RequestMapping.controllerMap.get(requestUrl);
+		Controller controller = RequestMapping.controllerMap.get(requestUrl);
 
-        try {
-            String result = controller.execute(req, resp);
+		try {
+			String result = controller.execute(req, resp);
+			move(result, req, resp);
+		} catch (Exception exception) {
+			LOGGER.error("DispatcherServlet error : ", exception);
+		}
+	}
 
-            if (StringUtils.startsWith(result, "redirect:")) {
-                String redirectUrl = StringUtils.remove(result, "redirect:");
+	@Override
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String requestUrl = req.getRequestURI();
 
-                resp.sendRedirect(redirectUrl);
-            } else {
-                RequestDispatcher rd = req.getRequestDispatcher(result);
-                rd.forward(req, resp);
-            }
+		Controller controller = RequestMapping.controllerMap.get(requestUrl);
 
-        } catch (Exception exception) {
-            LOGGER.error("DispatcherServlet error : ", exception);
+		try {
+			String result = controller.execute(req, resp);
+			move(result, req, resp);
+		} catch (Exception exception) {
+			LOGGER.error("DispatcherServlet error : ", exception);
+		}
+	}
 
-        }
-    }
+	private void move(String viewName, HttpServletRequest request, HttpServletResponse response)
+		throws IOException, ServletException {
+		if (StringUtils.startsWith(viewName, DEFAULT_REDIRECT_PREFIX)) {
+			String redirectUrl = StringUtils.remove(viewName, DEFAULT_REDIRECT_PREFIX);
+			response.sendRedirect(redirectUrl);
 
-    @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
-    }
+			return;
+		}
+
+		RequestDispatcher rd = request.getRequestDispatcher(viewName);
+		rd.forward(request, response);
+	}
 }
