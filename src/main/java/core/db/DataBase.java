@@ -11,6 +11,7 @@ public class DataBase {
     private static Map<String, User> users = Maps.newHashMap();
     static {
         users.put("admin", new User("admin", "password", "자바지기", "admin@slipp.net"));
+        users.put("seungah", new User("seungah", "1234", "승아", "seungah@nts-corp.com"));
     }
 
     public static void addUser(User user) {

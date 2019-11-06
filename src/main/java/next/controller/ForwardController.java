@@ -1,26 +1,25 @@
 package next.controller;
 
 import core.mvc.Controller;
+import sun.text.resources.cldr.so.FormatData_so;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class ForwardController implements Controller {
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String returnJsp = "";
+	private String forwardUrl;
 
-        switch (request.getRequestURI()) {
-            case "/users/updateForm":
-                returnJsp = "/user/updateForm.jsp";
-                break;
-            case "/users/loginForm":
-                returnJsp = "/user/login.jsp";
-                break;
-            case "/users/form":
-                returnJsp = "/user/form.jsp";
-        }
+	public ForwardController(String forwardUrl) {
+		this.forwardUrl = forwardUrl;
+		if (forwardUrl == null) {
+			throw new NullPointerException("forwardUrl is null. 이동할 URL을 입력하세요");
+		}
+	}
 
-        return returnJsp;
-    }
+	@Override
+	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		return forwardUrl;
+	}
+
 }
