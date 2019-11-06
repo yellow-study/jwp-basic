@@ -19,21 +19,7 @@ public class DispatcherServlet extends HttpServlet {
 	private static final String DEFAULT_REDIRECT_PREFIX = "redirect:";
 
 	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String requestUrl = req.getRequestURI();
-
-		Controller controller = RequestMapping.controllerMap.get(requestUrl);
-
-		try {
-			String result = controller.execute(req, resp);
-			move(result, req, resp);
-		} catch (Exception exception) {
-			LOGGER.error("DispatcherServlet error : ", exception);
-		}
-	}
-
-	@Override
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String requestUrl = req.getRequestURI();
 
 		Controller controller = RequestMapping.controllerMap.get(requestUrl);
