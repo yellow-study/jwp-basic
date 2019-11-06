@@ -5,20 +5,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @WebServlet(name = "dispatcher", urlPatterns = "/", loadOnStartup = 1)
 public class DispatcherServlet extends HttpServlet {
     private static final Logger LOGGER = LoggerFactory.getLogger("DispatcherServlet");
     private static final long serialVersionUID = 1L;
+    private static String REDIRECT_PREFIX = "redirect:";
 
     @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void service(HttpServletRequest req, HttpServletResponse resp) {
         String requestUrl = req.getRequestURI();
 
         Controller controller = RequestMapping.controllerMap.get(requestUrl);
@@ -26,8 +25,8 @@ public class DispatcherServlet extends HttpServlet {
         try {
             String result = controller.execute(req, resp);
 
-            if (StringUtils.startsWith(result, "redirect:")) {
-                String redirectUrl = StringUtils.remove(result, "redirect:");
+            if (StringUtils.startsWith(result, REDIRECT_PREFIX)) {
+                String redirectUrl = StringUtils.remove(result, REDIRECT_PREFIX);
 
                 resp.sendRedirect(redirectUrl);
             } else {
@@ -39,10 +38,5 @@ public class DispatcherServlet extends HttpServlet {
             LOGGER.error("DispatcherServlet error : ", exception);
 
         }
-    }
-
-    @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
     }
 }

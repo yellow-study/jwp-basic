@@ -7,13 +7,10 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ForwardController implements Controller {
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String execute(HttpServletRequest request, HttpServletResponse response) {
         String returnJsp = "";
 
         switch (request.getRequestURI()) {
-            case "/users/updateForm":
-                returnJsp = "/user/updateForm.jsp";
-                break;
             case "/users/loginForm":
                 returnJsp = "/user/login.jsp";
                 break;

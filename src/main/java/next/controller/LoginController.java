@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 
 public class LoginController implements Controller {
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String execute(HttpServletRequest request, HttpServletResponse response) {
         String userId = request.getParameter("userId");
         String password = request.getParameter("password");
         User user = DataBase.findUserById(userId);
