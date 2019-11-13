@@ -28,6 +28,7 @@ public class LoginController implements Controller {
         } else {
             req.setAttribute("loginFailed", true);
             return "/user/login.jsp";
+
         }
     }
 }
