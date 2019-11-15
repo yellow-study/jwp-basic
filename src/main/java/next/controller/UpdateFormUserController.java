@@ -3,7 +3,6 @@ package next.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import core.db.DataBase;
 import core.mvc.Controller;
 import next.dao.UserDao;
 import next.model.User;

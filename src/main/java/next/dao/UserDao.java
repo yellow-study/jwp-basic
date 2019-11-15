@@ -8,123 +8,113 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class UserDao {
-    public void insert(User user) throws SQLException {
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        try {
-            con = ConnectionManager.getConnection();
-            String sql = "INSERT INTO USERS VALUES (?, ?, ?, ?)";
-            pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, user.getUserId());
-            pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getName());
-            pstmt.setString(4, user.getEmail());
 
-            pstmt.executeUpdate();
-        } finally {
-            if (pstmt != null) {
-                pstmt.close();
-            }
+	public void insert(User user) throws SQLException {
+		String sql = "INSERT INTO USERS VALUES (?, ?, ?, ?)";
+		PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {
+			@Override
+			public PreparedStatement values() throws SQLException {
+				Connection con = ConnectionManager.getConnection();
+				PreparedStatement preparedStatement = con.prepareStatement(sql);
+				preparedStatement.setString(1, user.getUserId());
+				preparedStatement.setString(2, user.getPassword());
+				preparedStatement.setString(3, user.getName());
+				preparedStatement.setString(4, user.getEmail());
 
-            if (con != null) {
-                con.close();
-            }
-        }
-    }
+				return preparedStatement;
+			}
+		};
 
-    public void update(User user) throws SQLException {
-        Connection con = null;
-        PreparedStatement pstmt = null;
+		JdbcTemplate jdbcTemplate = new JdbcTemplate();
+		jdbcTemplate.update(sql, preparedStatementSetter);
+	}
 
-        try {
-            con = ConnectionManager.getConnection();
-            String sql = "UPDATE USERS SET password=?, name=?, email=? WHERE userId=?";
-            pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, user.getPassword());
-            pstmt.setString(2, user.getName());
-            pstmt.setString(3, user.getEmail());
-            pstmt.setString(4, user.getUserId());
+	public void update(User user) throws SQLException {
+		String sql = "UPDATE USERS SET password=?, name=?, email=? WHERE userId=?";
+		PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {
+			@Override
+			public PreparedStatement values() throws SQLException {
+				Connection con = ConnectionManager.getConnection();
+				PreparedStatement preparedStatement = con.prepareStatement(sql);
+				preparedStatement.setString(1, user.getPassword());
+				preparedStatement.setString(2, user.getName());
+				preparedStatement.setString(3, user.getEmail());
+				preparedStatement.setString(4, user.getUserId());
 
-            pstmt.executeUpdate();
-        } finally {
-            if (pstmt != null) {
-                pstmt.close();
-            }
+				return preparedStatement;
+			}
+		};
+		JdbcTemplate jdbcTemplate = new JdbcTemplate();
+		jdbcTemplate.update(sql, preparedStatementSetter);
+	}
 
-            if (con != null) {
-                con.close();
-            }
-        }
-    }
 
-    public List<User> findAll() throws SQLException {
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
+	public List<User> findAll() throws SQLException {
+		String sql = "SELECT userId, password, name, email FROM USERS";
 
-        List<User> userList = new ArrayList();
+		RowMapper rowMapper = new RowMapper() {
+			@Override
+			public Object mapRow(ResultSet rs) throws SQLException {
+				List<User> userList = new ArrayList<>();
+				User user = null;
+				while (rs.next()) {
+					user = new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
+							rs.getString("email"));
+					userList.add(user);
+				}
+				return userList;
+			}
+		};
 
-        try {
-            con = ConnectionManager.getConnection();
-            String sql = "SELECT userId, password, name, email FROM USERS";
-            pstmt = con.prepareStatement(sql);
+		List<User> resultUsers;
+		try(Connection con = ConnectionManager.getConnection(); PreparedStatement preparedStatement = con.prepareStatement(sql);) {
+			PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {
+				@Override
+				public PreparedStatement values() throws SQLException {
+					return preparedStatement;
+				}
+			};
 
-            rs = pstmt.executeQuery();
+			JdbcTemplate jdbcTemplate = new JdbcTemplate();
+			resultUsers = jdbcTemplate.query(sql, preparedStatementSetter, rowMapper);
+		}
 
-            User user = null;
-            while (rs.next()) {
-                user = new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
-                        rs.getString("email"));
+		return resultUsers;
+	}
 
-                userList.add(user);
-            }
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (pstmt != null) {
-                pstmt.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
+	public User findByUserId(String userId) throws SQLException {
+		String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
 
-        return userList;
-    }
+		RowMapper rowMapper = new RowMapper() {
+			@Override
+			public Object mapRow(ResultSet rs) throws SQLException {
+				User user = null;
+				if (rs.next()) {
+					user = new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
+							rs.getString("email"));
+				}
+				return user;
+			}
+		};
 
-    public User findByUserId(String userId) throws SQLException {
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            con = ConnectionManager.getConnection();
-            String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
-            pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, userId);
+		User resultUser = null;
+		try(Connection con = ConnectionManager.getConnection(); PreparedStatement preparedStatement = con.prepareStatement(sql);) {
+			PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {
+				@Override
+				public PreparedStatement values() throws SQLException {
+					preparedStatement.setString(1, userId);
+					return preparedStatement;
+				}
+			};
 
-            rs = pstmt.executeQuery();
+			JdbcTemplate jdbcTemplate = new JdbcTemplate();
+			resultUser = (User) jdbcTemplate.queryForObject(sql, preparedStatementSetter, rowMapper);
+		}
 
-            User user = null;
-            if (rs.next()) {
-                user = new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
-                        rs.getString("email"));
-            }
-
-            return user;
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (pstmt != null) {
-                pstmt.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
-    }
+		return resultUser;
+	}
 }
