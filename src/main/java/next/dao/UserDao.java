@@ -1,125 +1,76 @@
 package next.dao;
 
-import java.sql.Connection;
+import core.jdbc.JdbcTemplate;
+import core.jdbc.RowMapper;
+import core.jdbc.SqlValueBinder;
+import lombok.extern.slf4j.Slf4j;
+import next.model.User;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import core.jdbc.ConnectionManager;
-import next.model.User;
-
+@Slf4j
 public class UserDao {
-    public void insert(User user) throws SQLException {
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        try {
-            con = ConnectionManager.getConnection();
-            String sql = "INSERT INTO USERS VALUES (?, ?, ?, ?)";
-            pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, user.getUserId());
-            pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getName());
-            pstmt.setString(4, user.getEmail());
+    private JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
-            pstmt.executeUpdate();
-        } finally {
-            if (pstmt != null) {
-                pstmt.close();
-            }
+    public void insert(User user) {
+        SqlValueBinder<PreparedStatement, User> valueBinder = (preparedStatement, data) -> {
+            preparedStatement.setString(1, data.getUserId());
+            preparedStatement.setString(2, data.getPassword());
+            preparedStatement.setString(3, data.getName());
+            preparedStatement.setString(4, data.getEmail());
+        };
 
-            if (con != null) {
-                con.close();
-            }
-        }
+        jdbcTemplate.insert(user, UserSql.INTO_USERS_VALUES, valueBinder);
     }
 
-    public void update(User user) throws SQLException {
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        try {
-            con = ConnectionManager.getConnection();
-            String sql = "UPDATE USERS SET password = ?, name = ?, email = ? WHERE userId = ?";
-            pstmt = con.prepareStatement(sql);
+    public void update(User user) {
+        SqlValueBinder<PreparedStatement, User> valueBinder = (preparedStatement, data) -> {
+            preparedStatement.setString(1, data.getPassword());
+            preparedStatement.setString(2, data.getName());
+            preparedStatement.setString(3, data.getEmail());
+            preparedStatement.setString(4, data.getUserId());
+        };
 
-            pstmt.setString(1, user.getPassword());
-            pstmt.setString(2, user.getName());
-            pstmt.setString(3, user.getEmail());
-            pstmt.setString(4, user.getUserId());
-
-            pstmt.executeUpdate();
-        } finally {
-            if (pstmt != null) {
-                pstmt.close();
-            }
-
-            if (con != null) {
-                con.close();
-            }
-        }
+        jdbcTemplate.update(user, UserSql.UPDATE_USER, valueBinder);
     }
 
-    public List<User> findAll() throws SQLException {
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            con = ConnectionManager.getConnection();
-            String sql = "SELECT userId, password, name, email FROM USERS";
-            pstmt = con.prepareStatement(sql);
-
-            rs = pstmt.executeQuery();
-
+    public List<User> findAll() {
+        RowMapper<ResultSet, List<User>> rowMapper = (resultSet) -> {
             List<User> users = new ArrayList<>();
-            while (rs.next()) {
-                users.add(new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
-                        rs.getString("email")));
+            while (resultSet.next()) {
+                users.add(mapUser(resultSet));
             }
-
             return users;
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (pstmt != null) {
-                pstmt.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
+        };
+
+        return jdbcTemplate.query(UserSql.SELECT_USERS, rowMapper);
     }
 
-    public User findByUserId(String userId) throws SQLException {
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            con = ConnectionManager.getConnection();
-            String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
-            pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, userId);
+    public User findByUserId(String userId) {
+        SqlValueBinder<PreparedStatement, String> valueBinder = (preparedStatement, data) ->
+                preparedStatement.setString(1, data);
 
-            rs = pstmt.executeQuery();
-
+        RowMapper<ResultSet, User> rowMapper = (resultSet) -> {
             User user = null;
-            if (rs.next()) {
-                user = new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
-                        rs.getString("email"));
+            if (resultSet.next()) {
+                user = mapUser(resultSet);
             }
-
             return user;
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (pstmt != null) {
-                pstmt.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
+        };
+
+        return jdbcTemplate.queryForObject(userId, UserSql.SELECT_USER_BY_ID, valueBinder, rowMapper);
+    }
+
+    private User mapUser(ResultSet resultSet) throws SQLException {
+        return User.builder()
+                .userId(resultSet.getString("userId"))
+                .password(resultSet.getString("password"))
+                .name(resultSet.getString("name"))
+                .email(resultSet.getString("email"))
+                .build();
     }
 }
