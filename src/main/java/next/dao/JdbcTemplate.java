@@ -8,96 +8,69 @@ import java.util.ArrayList;
 import java.util.List;
 
 import core.jdbc.ConnectionManager;
-import next.model.User;
 
-abstract class JdbcTemplate {
+class JdbcTemplate {
 
-	void update(User user) throws SQLException {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-			con = ConnectionManager.getConnection();
-			String sql = createQuery();
-			pstmt = con.prepareStatement(sql);
-			setValues(pstmt);
-
-			pstmt.executeUpdate();
-		} finally {
-			if (pstmt != null) {
-				pstmt.close();
-			}
-
-			if (con != null) {
-				con.close();
-			}
+	void update(String sql, PreparedStatementSetter preparedStatementSetter) throws RuntimeException {
+		try (Connection con = ConnectionManager.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);){
+				preparedStatementSetter.values(pstmt);
+				pstmt.executeUpdate();
+		} catch(SQLException exception) {
+			//TODO Exception 정의 
+			throw new RuntimeException("DataAccessException : {} ", exception);
 		}
 	}
 
-	List query(String sql) throws SQLException {
-		Connection con = null;
-		PreparedStatement pstmt = null;
+	List query(String sql, RowMapper rowMapper) throws SQLException {
 		ResultSet rs = null;
 
-		try {
-			con = ConnectionManager.getConnection();
-			pstmt = con.prepareStatement(sql);
+		try (Connection con = ConnectionManager.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql)){
 
 			rs = pstmt.executeQuery();
 
 			List<Object> result = new ArrayList<Object>();
 			while (rs.next()) {
-				result.add(mapRow(rs));
+				result.add(rowMapper.mapRow(rs));
 			}
 
 			return result;
 
+		} catch(SQLException exception) {
+			//TODO Exception 정의 
+			throw new RuntimeException("DataAccessException : {} ", exception);
 		} finally {
 			if (rs != null) {
 				rs.close();
 			}
-			if (pstmt != null) {
-				pstmt.close();
-			}
-			if (con != null) {
-				con.close();
-			}
 		}
 	}
 
-	Object queryForObject(String sql) throws SQLException {
-		Connection con = null;
-		PreparedStatement pstmt = null;
+	Object queryForObject(String sql, PreparedStatementSetter preparedStatementSetter, RowMapper rowMapper) throws SQLException {
 		ResultSet rs = null;
-		try {
-			con = ConnectionManager.getConnection();
-			pstmt = con.prepareStatement(sql);
-			setValues(pstmt);
+
+		try (Connection con = ConnectionManager.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);){
+			preparedStatementSetter.values(pstmt);
 
 			rs = pstmt.executeQuery();
+
 			Object result = null;
+
 			if (rs.next()) {
-				result = mapRow(rs);
+				result = rowMapper.mapRow(rs);
 			}
 
 			return result;
 
+		} catch(SQLException exception) {
+			//TODO Exception 정의 
+			throw new RuntimeException("DataAccessException : {} ", exception);
 		} finally {
 			if (rs != null) {
 				rs.close();
 			}
-			if (pstmt != null) {
-				pstmt.close();
-			}
-			if (con != null) {
-				con.close();
-			}
 		}
 	}
-
-	abstract void setValues(PreparedStatement pstmt) throws SQLException;
-
-	abstract String createQuery();
-
-	abstract Object mapRow(ResultSet rs) throws SQLException;
 }
