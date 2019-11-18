@@ -22,30 +22,6 @@ public class JdbcTemplate {
 		}
 	}
 
-	//	public List query(String sql, RowMapper rowMapper) throws DataAccessException {
-	//		ResultSet rs = null;
-	//
-	//		try (Connection con = ConnectionManager.getConnection();
-	//				PreparedStatement pstmt = con.prepareStatement(sql)){
-	//
-	//			rs = pstmt.executeQuery();
-	//
-	//			List<Object> result = new ArrayList<Object>();
-	//			while (rs.next()) {
-	//				result.add(rowMapper.mapRow(rs));
-	//			}
-	//
-	//			if (rs != null) {
-	//				rs.close();
-	//			}
-	//
-	//			return result;
-	//
-	//		} catch(SQLException exception) {
-	//			throw new DataAccessException("JdbcTemplate.query error : {} ", exception);
-	//		}
-	//	}
-
 	public <T> List<T> query(String sql, RowMapper<T> rowMapper) throws DataAccessException {
 		ResultSet rs = null;
 
