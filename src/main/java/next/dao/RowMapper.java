@@ -3,6 +3,6 @@ package next.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-interface RowMapper {
-	Object mapRow(ResultSet rs) throws SQLException;
+interface RowMapper<T> {
+	T mapRow(ResultSet rs) throws SQLException;
 }

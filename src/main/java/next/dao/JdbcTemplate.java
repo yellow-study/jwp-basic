@@ -8,55 +8,83 @@ import java.util.ArrayList;
 import java.util.List;
 
 import core.jdbc.ConnectionManager;
+import next.exception.DataAccessException;
 
-class JdbcTemplate {
+public class JdbcTemplate {
 
-	void update(String sql, PreparedStatementSetter preparedStatementSetter) throws RuntimeException {
+	public void update(String sql, PreparedStatementSetter preparedStatementSetter) throws DataAccessException {
 		try (Connection con = ConnectionManager.getConnection();
-				PreparedStatement pstmt = con.prepareStatement(sql);){
-				preparedStatementSetter.values(pstmt);
-				pstmt.executeUpdate();
-		} catch(SQLException exception) {
-			//TODO Exception 정의 
-			throw new RuntimeException("DataAccessException : {} ", exception);
+			PreparedStatement pstmt = con.prepareStatement(sql);) {
+			preparedStatementSetter.values(pstmt);
+			pstmt.executeUpdate();
+		} catch (SQLException exception) {
+			throw new DataAccessException("JdbcTemplate.update error : {} ", exception);
 		}
 	}
 
-	List query(String sql, RowMapper rowMapper) throws SQLException {
+	//	public List query(String sql, RowMapper rowMapper) throws DataAccessException {
+	//		ResultSet rs = null;
+	//
+	//		try (Connection con = ConnectionManager.getConnection();
+	//				PreparedStatement pstmt = con.prepareStatement(sql)){
+	//
+	//			rs = pstmt.executeQuery();
+	//
+	//			List<Object> result = new ArrayList<Object>();
+	//			while (rs.next()) {
+	//				result.add(rowMapper.mapRow(rs));
+	//			}
+	//
+	//			if (rs != null) {
+	//				rs.close();
+	//			}
+	//
+	//			return result;
+	//
+	//		} catch(SQLException exception) {
+	//			throw new DataAccessException("JdbcTemplate.query error : {} ", exception);
+	//		}
+	//	}
+
+	public <T> List<T> query(String sql, RowMapper<T> rowMapper) throws DataAccessException {
 		ResultSet rs = null;
 
 		try (Connection con = ConnectionManager.getConnection();
-				PreparedStatement pstmt = con.prepareStatement(sql)){
+			PreparedStatement pstmt = con.prepareStatement(sql)) {
 
 			rs = pstmt.executeQuery();
 
-			List<Object> result = new ArrayList<Object>();
+			List<T> result = new ArrayList<T>();
 			while (rs.next()) {
 				result.add(rowMapper.mapRow(rs));
 			}
 
 			return result;
 
-		} catch(SQLException exception) {
-			//TODO Exception 정의 
-			throw new RuntimeException("DataAccessException : {} ", exception);
+		} catch (SQLException exception) {
+			throw new DataAccessException("JdbcTemplate.query error : {} ", exception);
 		} finally {
 			if (rs != null) {
-				rs.close();
+				try {
+					rs.close();
+				} catch (SQLException exception) {
+					throw new DataAccessException("JdbcTemplate.query ResultSet close error : {} ", exception);
+				}
 			}
 		}
 	}
 
-	Object queryForObject(String sql, PreparedStatementSetter preparedStatementSetter, RowMapper rowMapper) throws SQLException {
+	public <T> T queryForObject(String sql, PreparedStatementSetter preparedStatementSetter, RowMapper<T> rowMapper)
+		throws DataAccessException {
 		ResultSet rs = null;
 
 		try (Connection con = ConnectionManager.getConnection();
-				PreparedStatement pstmt = con.prepareStatement(sql);){
+			PreparedStatement pstmt = con.prepareStatement(sql);) {
 			preparedStatementSetter.values(pstmt);
 
 			rs = pstmt.executeQuery();
 
-			Object result = null;
+			T result = null;
 
 			if (rs.next()) {
 				result = rowMapper.mapRow(rs);
@@ -64,12 +92,15 @@ class JdbcTemplate {
 
 			return result;
 
-		} catch(SQLException exception) {
-			//TODO Exception 정의 
-			throw new RuntimeException("DataAccessException : {} ", exception);
+		} catch (SQLException exception) {
+			throw new DataAccessException("JdbcTemplate.queryForObject error : {} ", exception);
 		} finally {
 			if (rs != null) {
-				rs.close();
+				try {
+					rs.close();
+				} catch (SQLException exception) {
+					throw new DataAccessException("JdbcTemplate.queryForObject ResultSet close error : {} ", exception);
+				}
 			}
 		}
 	}
