@@ -26,12 +26,13 @@ public class JdbcTemplate {
 		update(sql, createPreparedStatementSetter(parameters));
 	}
 
-	public <T> List<T> query(String sql, RowMapper<T> rowMapper) throws DataAccessException {
+	public <T> List<T> query(String sql, RowMapper<T> rowMapper, PreparedStatementSetter pss)
+		throws DataAccessException {
 		ResultSet rs = null;
 
 		try (Connection con = ConnectionManager.getConnection();
 			PreparedStatement pstmt = con.prepareStatement(sql)) {
-
+			pss.values(pstmt);
 			rs = pstmt.executeQuery();
 
 			List<T> result = new ArrayList<T>();
@@ -55,11 +56,10 @@ public class JdbcTemplate {
 	}
 
 	public <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... parameters) throws DataAccessException {
-		return query(sql, rowMapper, parameters);
+		return query(sql, rowMapper, createPreparedStatementSetter(parameters));
 	}
 
-	public <T> T queryForObject(String sql, RowMapper<T> rowMapper, Object... parameters)
-		throws DataAccessException {
+	public <T> T queryForObject(String sql, RowMapper<T> rowMapper, Object... parameters) throws DataAccessException {
 		return queryForObject(sql, rowMapper, createPreparedStatementSetter(parameters));
 	}
 
@@ -69,7 +69,7 @@ public class JdbcTemplate {
 
 		try (Connection con = ConnectionManager.getConnection();
 			PreparedStatement pstmt = con.prepareStatement(sql);) {
-
+			pss.values(pstmt);
 			rs = pstmt.executeQuery();
 
 			T result = null;
