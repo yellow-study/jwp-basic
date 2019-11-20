@@ -12,19 +12,18 @@ import next.exception.DataAccessException;
 
 public class JdbcTemplate {
 
-	public void update(String sql, Object... parameters) throws DataAccessException {
-		try (Connection con = ConnectionManager.getConnection();
-			PreparedStatement pstmt = con.prepareStatement(sql);) {
-
-			int parameterIndex = 0;
-			for (Object parameter : parameters) {
-				pstmt.setObject(parameterIndex + 1, parameter);
-				parameterIndex++;
-			}
+	public void update(String sql, PreparedStatementSetter pss) throws DataAccessException {
+		try (Connection conn = ConnectionManager.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pss.values(pstmt);
 			pstmt.executeUpdate();
 		} catch (SQLException exception) {
 			throw new DataAccessException("JdbcTemplate.update error : {} ", exception);
 		}
+	}
+
+	public void update(String sql, Object... parameters) throws DataAccessException {
+		update(sql, createPreparedStatementSetter(parameters));
 	}
 
 	public <T> List<T> query(String sql, RowMapper<T> rowMapper) throws DataAccessException {
@@ -55,18 +54,21 @@ public class JdbcTemplate {
 		}
 	}
 
+	public <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... parameters) throws DataAccessException {
+		return query(sql, rowMapper, parameters);
+	}
+
 	public <T> T queryForObject(String sql, RowMapper<T> rowMapper, Object... parameters)
+		throws DataAccessException {
+		return queryForObject(sql, rowMapper, createPreparedStatementSetter(parameters));
+	}
+
+	public <T> T queryForObject(String sql, RowMapper<T> rowMapper, PreparedStatementSetter pss)
 		throws DataAccessException {
 		ResultSet rs = null;
 
 		try (Connection con = ConnectionManager.getConnection();
 			PreparedStatement pstmt = con.prepareStatement(sql);) {
-
-			int parameterIndex = 0;
-			for (Object parameter : parameters) {
-				pstmt.setObject(parameterIndex + 1, parameter);
-				parameterIndex++;
-			}
 
 			rs = pstmt.executeQuery();
 
@@ -89,5 +91,18 @@ public class JdbcTemplate {
 				}
 			}
 		}
+	}
+
+	private PreparedStatementSetter createPreparedStatementSetter(Object... parameters) {
+		return new PreparedStatementSetter() {
+			@Override
+			public void values(PreparedStatement pstmt) throws SQLException {
+				int parameterIndex = 0;
+				for (Object parameter : parameters) {
+					pstmt.setObject(parameterIndex + 1, parameter);
+					parameterIndex++;
+				}
+			}
+		};
 	}
 }
