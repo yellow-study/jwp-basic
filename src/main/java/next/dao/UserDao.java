@@ -8,18 +8,23 @@ import java.util.List;
 
 public class UserDao {
 
+	private UserDao() {}
+
+	private static class UserDaoHolder {
+		public static final UserDao dao = new UserDao();
+	}
+
+	public static UserDao getInstance() {
+		return UserDaoHolder.dao;
+	}
+
 	public void insert(User user) {
 
-		PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {
-
-			@Override
-			public void values(PreparedStatement pstmt) throws SQLException {
-				pstmt.setString(1, user.getUserId());
-				pstmt.setString(2, user.getPassword());
-				pstmt.setString(3, user.getName());
-				pstmt.setString(4, user.getEmail());
-
-			}
+		PreparedStatementSetter preparedStatementSetter = (PreparedStatement pstmt) -> {
+			pstmt.setString(1, user.getUserId());
+			pstmt.setString(2, user.getPassword());
+			pstmt.setString(3, user.getName());
+			pstmt.setString(4, user.getEmail());
 		};
 
 		JdbcTemplate jdbcTemplate = new JdbcTemplate();
@@ -30,16 +35,11 @@ public class UserDao {
 
 	public void update(User user) {
 
-		PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {
-
-			@Override
-			public void values(PreparedStatement pstmt) throws SQLException {
-				pstmt.setString(1, user.getPassword());
-				pstmt.setString(2, user.getName());
-				pstmt.setString(3, user.getEmail());
-				pstmt.setString(4, user.getUserId());
-
-			}
+		PreparedStatementSetter preparedStatementSetter = (PreparedStatement pstmt) -> {
+			pstmt.setString(1, user.getPassword());
+			pstmt.setString(2, user.getName());
+			pstmt.setString(3, user.getEmail());
+			pstmt.setString(4, user.getUserId());
 		};
 
 		JdbcTemplate jdbcTemplate = new JdbcTemplate();
@@ -50,13 +50,9 @@ public class UserDao {
 
 	public List<User> findAll() {
 
-		RowMapper<User> rowMapper = new RowMapper<User>() {
-
-			@Override
-			public User mapRow(ResultSet rs) throws SQLException {
-				return new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
-					rs.getString("email"));
-			}
+		RowMapper<User> rowMapper = (ResultSet rs) -> {
+			return new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
+				rs.getString("email"));
 		};
 
 		JdbcTemplate jdbcTemplate = new JdbcTemplate();
@@ -66,22 +62,13 @@ public class UserDao {
 	}
 
 	public User findByUserId(String userId) {
-		PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {
-
-			@Override
-			public void values(PreparedStatement pstmt) throws SQLException {
-				pstmt.setString(1, userId);
-
-			}
+		PreparedStatementSetter preparedStatementSetter = (PreparedStatement pstmt) -> {
+			pstmt.setString(1, userId);
 		};
 
-		RowMapper<User> rowMapper = new RowMapper<User>() {
-
-			@Override
-			public User mapRow(ResultSet rs) throws SQLException {
-				return new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
-					rs.getString("email"));
-			}
+		RowMapper<User> rowMapper = (ResultSet rs) -> {
+			return new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
+				rs.getString("email"));
 		};
 
 		JdbcTemplate jdbcTemplate = new JdbcTemplate();

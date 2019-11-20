@@ -19,14 +19,8 @@ public class CreateUserController implements Controller {
 			req.getParameter("email"));
 		log.debug("User : {}", user);
 
-		UserDao userDao = new UserDao();
-
-		try {
-			userDao.insert(user);
-		} catch (DataAccessException exception) {
-			//TODO error page return
-			log.error("CreateUserController join error {}", exception.getMessage());
-		}
+		UserDao userDao = UserDao.getInstance();
+		userDao.insert(user);
 
 		return "redirect:/";
 	}
