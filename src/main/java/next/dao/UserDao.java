@@ -8,7 +8,11 @@ import java.util.List;
 
 public class UserDao {
 
-	private UserDao() {}
+	private JdbcTemplate jdbcTemplate;
+
+	private UserDao() {
+		jdbcTemplate = new JdbcTemplate();
+	};
 
 	private static class UserDaoHolder {
 		public static final UserDao dao = new UserDao();
@@ -19,61 +23,32 @@ public class UserDao {
 	}
 
 	public void insert(User user) {
-
-		PreparedStatementSetter preparedStatementSetter = (PreparedStatement pstmt) -> {
-			pstmt.setString(1, user.getUserId());
-			pstmt.setString(2, user.getPassword());
-			pstmt.setString(3, user.getName());
-			pstmt.setString(4, user.getEmail());
-		};
-
-		JdbcTemplate jdbcTemplate = new JdbcTemplate();
 		String sql = "INSERT INTO USERS VALUES (?,?,?,?)";
 
-		jdbcTemplate.update(sql, preparedStatementSetter);
+		jdbcTemplate.update(sql, user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
 	}
 
 	public void update(User user) {
-
-		PreparedStatementSetter preparedStatementSetter = (PreparedStatement pstmt) -> {
-			pstmt.setString(1, user.getPassword());
-			pstmt.setString(2, user.getName());
-			pstmt.setString(3, user.getEmail());
-			pstmt.setString(4, user.getUserId());
-		};
-
-		JdbcTemplate jdbcTemplate = new JdbcTemplate();
 		String sql = "UPDATE USERS SET password=?, name=?, email=? WHERE userId=?";
 
-		jdbcTemplate.update(sql, preparedStatementSetter);
+		jdbcTemplate.update(sql, user.getPassword(), user.getName(), user.getEmail(), user.getUserId());
 	}
 
 	public List<User> findAll() {
-
-		RowMapper<User> rowMapper = (ResultSet rs) -> {
-			return new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
-				rs.getString("email"));
-		};
-
-		JdbcTemplate jdbcTemplate = new JdbcTemplate();
 		String sql = "SELECT userId, password, name, email FROM USERS";
 
-		return jdbcTemplate.query(sql, rowMapper);
+		return jdbcTemplate.query(sql, (ResultSet rs) -> {
+			return new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
+				rs.getString("email"));
+		});
 	}
 
 	public User findByUserId(String userId) {
-		PreparedStatementSetter preparedStatementSetter = (PreparedStatement pstmt) -> {
-			pstmt.setString(1, userId);
-		};
-
-		RowMapper<User> rowMapper = (ResultSet rs) -> {
-			return new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
-				rs.getString("email"));
-		};
-
-		JdbcTemplate jdbcTemplate = new JdbcTemplate();
 		String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
 
-		return jdbcTemplate.queryForObject(sql, preparedStatementSetter, rowMapper);
+		return jdbcTemplate.queryForObject(sql, (ResultSet rs) -> {
+			return new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
+				rs.getString("email"));
+		}, userId);
 	}
 }

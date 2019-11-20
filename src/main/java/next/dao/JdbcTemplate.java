@@ -12,10 +12,15 @@ import next.exception.DataAccessException;
 
 public class JdbcTemplate {
 
-	public void update(String sql, PreparedStatementSetter preparedStatementSetter) throws DataAccessException {
+	public void update(String sql, Object... parameters) throws DataAccessException {
 		try (Connection con = ConnectionManager.getConnection();
 			PreparedStatement pstmt = con.prepareStatement(sql);) {
-			preparedStatementSetter.values(pstmt);
+
+			int parameterIndex = 0;
+			for (Object parameter : parameters) {
+				pstmt.setObject(parameterIndex + 1, parameter);
+				parameterIndex++;
+			}
 			pstmt.executeUpdate();
 		} catch (SQLException exception) {
 			throw new DataAccessException("JdbcTemplate.update error : {} ", exception);
@@ -50,13 +55,18 @@ public class JdbcTemplate {
 		}
 	}
 
-	public <T> T queryForObject(String sql, PreparedStatementSetter preparedStatementSetter, RowMapper<T> rowMapper)
+	public <T> T queryForObject(String sql, RowMapper<T> rowMapper, Object... parameters)
 		throws DataAccessException {
 		ResultSet rs = null;
 
 		try (Connection con = ConnectionManager.getConnection();
 			PreparedStatement pstmt = con.prepareStatement(sql);) {
-			preparedStatementSetter.values(pstmt);
+
+			int parameterIndex = 0;
+			for (Object parameter : parameters) {
+				pstmt.setObject(parameterIndex + 1, parameter);
+				parameterIndex++;
+			}
 
 			rs = pstmt.executeQuery();
 
