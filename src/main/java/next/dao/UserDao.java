@@ -17,15 +17,11 @@ public class UserDao {
 		String sql = "INSERT INTO USERS VALUES (?, ?, ?, ?)";
 		PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {
 			@Override
-			public PreparedStatement values() throws SQLException {
-				Connection con = ConnectionManager.getConnection();
-				PreparedStatement preparedStatement = con.prepareStatement(sql);
+			public void setValues(PreparedStatement preparedStatement) throws SQLException {
 				preparedStatement.setString(1, user.getUserId());
 				preparedStatement.setString(2, user.getPassword());
 				preparedStatement.setString(3, user.getName());
 				preparedStatement.setString(4, user.getEmail());
-
-				return preparedStatement;
 			}
 		};
 
@@ -37,15 +33,11 @@ public class UserDao {
 		String sql = "UPDATE USERS SET password=?, name=?, email=? WHERE userId=?";
 		PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {
 			@Override
-			public PreparedStatement values() throws SQLException {
-				Connection con = ConnectionManager.getConnection();
-				PreparedStatement preparedStatement = con.prepareStatement(sql);
+			public void setValues(PreparedStatement preparedStatement) throws SQLException {
 				preparedStatement.setString(1, user.getPassword());
 				preparedStatement.setString(2, user.getName());
 				preparedStatement.setString(3, user.getEmail());
 				preparedStatement.setString(4, user.getUserId());
-
-				return preparedStatement;
 			}
 		};
 		JdbcTemplate jdbcTemplate = new JdbcTemplate();
@@ -56,9 +48,9 @@ public class UserDao {
 	public List<User> findAll() throws SQLException {
 		String sql = "SELECT userId, password, name, email FROM USERS";
 
-		RowMapper rowMapper = new RowMapper() {
+		RowMapper<List<User>> rowMapper = new RowMapper() {
 			@Override
-			public Object mapRow(ResultSet rs) throws SQLException {
+			public List<User> mapRow(ResultSet rs) throws SQLException {
 				List<User> userList = new ArrayList<>();
 				User user = null;
 				while (rs.next()) {
@@ -71,17 +63,15 @@ public class UserDao {
 		};
 
 		List<User> resultUsers;
-		try(Connection con = ConnectionManager.getConnection(); PreparedStatement preparedStatement = con.prepareStatement(sql);) {
-			PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {
-				@Override
-				public PreparedStatement values() throws SQLException {
-					return preparedStatement;
-				}
-			};
+		PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {
+			@Override
+			public void setValues(PreparedStatement preparedStatement) throws SQLException {
 
-			JdbcTemplate jdbcTemplate = new JdbcTemplate();
-			resultUsers = jdbcTemplate.query(sql, preparedStatementSetter, rowMapper);
-		}
+			}
+		};
+
+		JdbcTemplate jdbcTemplate = new JdbcTemplate();
+		resultUsers = jdbcTemplate.query(sql, preparedStatementSetter, rowMapper);
 
 		return resultUsers;
 	}
@@ -89,9 +79,9 @@ public class UserDao {
 	public User findByUserId(String userId) throws SQLException {
 		String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
 
-		RowMapper rowMapper = new RowMapper() {
+		RowMapper<User> rowMapper = new RowMapper() {
 			@Override
-			public Object mapRow(ResultSet rs) throws SQLException {
+			public User mapRow(ResultSet rs) throws SQLException {
 				User user = null;
 				if (rs.next()) {
 					user = new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
@@ -102,18 +92,16 @@ public class UserDao {
 		};
 
 		User resultUser = null;
-		try(Connection con = ConnectionManager.getConnection(); PreparedStatement preparedStatement = con.prepareStatement(sql);) {
-			PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {
-				@Override
-				public PreparedStatement values() throws SQLException {
-					preparedStatement.setString(1, userId);
-					return preparedStatement;
-				}
-			};
 
-			JdbcTemplate jdbcTemplate = new JdbcTemplate();
-			resultUser = (User) jdbcTemplate.queryForObject(sql, preparedStatementSetter, rowMapper);
-		}
+		PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {
+			@Override
+			public void setValues(PreparedStatement preparedStatement) throws SQLException {
+				preparedStatement.setString(1, userId);
+			}
+		};
+
+		JdbcTemplate jdbcTemplate = new JdbcTemplate();
+		resultUser = (User) jdbcTemplate.queryForObject(sql, preparedStatementSetter, rowMapper);
 
 		return resultUser;
 	}
