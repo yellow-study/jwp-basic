@@ -3,7 +3,6 @@ package next.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import core.db.DataBase;
 import core.mvc.Controller;
 import next.dao.UserDao;
 import next.model.User;
@@ -11,7 +10,7 @@ import next.model.User;
 public class UpdateFormUserController implements Controller {
 
 	@Override
-	public String execute(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+	public String execute(HttpServletRequest req, HttpServletResponse resp) {
 		String userId = req.getParameter("userId");
 
 		UserDao userDao = UserDao.getInstance();

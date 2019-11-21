@@ -1,10 +1,10 @@
 package next.dao;
 
-import next.model.User;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
+
+import core.jdbc.JdbcTemplate;
+import next.model.User;
 
 public class UserDao {
 
@@ -12,7 +12,7 @@ public class UserDao {
 
 	private UserDao() {
 		jdbcTemplate = new JdbcTemplate();
-	};
+	}
 
 	private static class UserDaoHolder {
 		public static final UserDao dao = new UserDao();
@@ -37,18 +37,14 @@ public class UserDao {
 	public List<User> findAll() {
 		String sql = "SELECT userId, password, name, email FROM USERS";
 
-		return jdbcTemplate.query(sql, (ResultSet rs) -> {
-			return new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
-				rs.getString("email"));
-		});
+		return jdbcTemplate.query(sql, (ResultSet rs) -> new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
+			rs.getString("email")));
 	}
 
 	public User findByUserId(String userId) {
 		String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
 
-		return jdbcTemplate.queryForObject(sql, (ResultSet rs) -> {
-			return new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
-				rs.getString("email"));
-		}, userId);
+		return jdbcTemplate.queryForObject(sql, (ResultSet rs) -> new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
+			rs.getString("email")), userId);
 	}
 }

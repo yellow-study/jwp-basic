@@ -1,16 +1,16 @@
 package next.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import core.mvc.Controller;
 import next.dao.UserDao;
 import next.model.User;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 public class ProfileController implements Controller {
 
 	@Override
-	public String execute(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+	public String execute(HttpServletRequest req, HttpServletResponse resp) {
 		String userId = req.getParameter("userId");
 		UserDao userDao = UserDao.getInstance();
 		User user = userDao.findByUserId(userId);

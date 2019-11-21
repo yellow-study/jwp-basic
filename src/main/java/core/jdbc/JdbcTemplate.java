@@ -1,4 +1,4 @@
-package next.dao;
+package core.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import core.jdbc.ConnectionManager;
 import next.exception.DataAccessException;
 
 public class JdbcTemplate {
@@ -68,7 +67,7 @@ public class JdbcTemplate {
 		ResultSet rs = null;
 
 		try (Connection con = ConnectionManager.getConnection();
-			PreparedStatement pstmt = con.prepareStatement(sql);) {
+			PreparedStatement pstmt = con.prepareStatement(sql)) {
 			pss.values(pstmt);
 			rs = pstmt.executeQuery();
 
