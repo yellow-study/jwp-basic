@@ -12,15 +12,17 @@ $(function () {
     $("form[name='answer']").find("input[type='submit']").click(addAnswer);
 });
 
-function addAnswer() {
+function addAnswer(event) {
     event.preventDefault();
-    var data = $("form[name='answer']").serialize();
 
-    console.log(data);
+    var answerFormData = $("form[name='answer']").serialize();
+
+    //TODO remove
+    console.log("serialized data : ", answerFormData);
 
     $.ajax({
-        url: "/qna/addAnswer"
-        , data: data
+        url: "/api/qna/answer"
+        , data: answerFormData
         , method : "POST"
         , dataType : "json"
         , success : onSuccess
@@ -29,6 +31,9 @@ function addAnswer() {
 }
 
 function onSuccess(result) {
+    //TODO remove
+    console.log("response data : ", result);
+
     var articleTemplate = jQuery("#answerTemplate").html();
     var template = articleTemplate.format(result.writer, new Date(result.createdDate), result.contents, result.answerId);
 
