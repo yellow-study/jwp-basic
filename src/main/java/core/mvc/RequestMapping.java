@@ -1,20 +1,15 @@
 package core.mvc;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import next.controller.HomeController;
+import next.controller.qna.AddAnswerController;
+import next.controller.qna.DeleteAnswerController;
+import next.controller.qna.ShowController;
+import next.controller.user.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import next.controller.HomeController;
-import next.controller.qna.ShowController;
-import next.controller.user.CreateUserController;
-import next.controller.user.ListUserController;
-import next.controller.user.LoginController;
-import next.controller.user.LogoutController;
-import next.controller.user.ProfileController;
-import next.controller.user.UpdateFormUserController;
-import next.controller.user.UpdateUserController;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RequestMapping {
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
@@ -32,6 +27,8 @@ public class RequestMapping {
         mappings.put("/users/updateForm", new UpdateFormUserController());
         mappings.put("/users/update", new UpdateUserController());
         mappings.put("/qna/show", new ShowController());
+        mappings.put("/api/qna/addAnswer", new AddAnswerController());
+        mappings.put("/api/qna/deleteAnswer", new DeleteAnswerController());
 
         logger.info("Initialized Request Mapping!");
     }

@@ -1,17 +1,13 @@
 package next.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.List;
-
-import next.model.Answer;
 import core.jdbc.JdbcTemplate;
 import core.jdbc.KeyHolder;
 import core.jdbc.PreparedStatementCreator;
 import core.jdbc.RowMapper;
+import next.model.Answer;
+
+import java.sql.*;
+import java.util.List;
 
 public class AnswerDao {
     public Answer insert(Answer answer) {
@@ -41,8 +37,9 @@ public class AnswerDao {
         RowMapper<Answer> rm = new RowMapper<Answer>() {
             @Override
             public Answer mapRow(ResultSet rs) throws SQLException {
-                return new Answer(rs.getLong("answerId"), rs.getString("writer"), rs.getString("contents"),
+                Answer answer = new Answer(rs.getLong("answerId"), rs.getString("writer"), rs.getString("contents"),
                         rs.getTimestamp("createdDate"), rs.getLong("questionId"));
+                return answer;
             }
         };
 
@@ -63,5 +60,20 @@ public class AnswerDao {
         };
 
         return jdbcTemplate.query(sql, rm, questionId);
+    }
+
+    public void delete(long answerId) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        String sql = "DELETE FROM ANSWERS WHERE answerId = ?";
+        PreparedStatementCreator psc = new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                PreparedStatement pstmt = con.prepareStatement(sql);
+                pstmt.setLong(1, answerId);
+                return pstmt;
+            }
+        };
+
+        jdbcTemplate.update(sql, psc);
     }
 }

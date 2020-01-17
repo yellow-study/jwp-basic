@@ -94,7 +94,7 @@
 									<div class="form-group col-lg-12">
 										<textarea name="contents" id="contents" class="form-control" placeholder=""></textarea>
 									</div>
-									<input class="btn btn-success pull-right" type="submit" value="답변하기" />
+									<input id="addAnswer" class="btn btn-success pull-right" type="submit" value="답변하기" />
 									<div class="clearfix" />
 								</form>
 							</div>
@@ -127,7 +127,7 @@
 				</li>
 				<li>
 					<form class="form-delete" action="/api/qna/deleteAnswer" method="POST">
-						<input type="hidden" name="answerId" value="{4}" />
+						<input type="hidden" name="answerId" value="{3}" />
 						<button type="submit" class="link-delete-article">삭제</button>
 					</form>
 				</li>
@@ -136,6 +136,7 @@
 	</article>
 </script>
 
+<script src="../js/jquery-2.2.0.min.js"></script>
 <%@ include file="/include/footer.jspf" %>
 </body>
 </html>
