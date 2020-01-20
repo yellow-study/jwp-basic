@@ -8,24 +8,26 @@ String.prototype.format = function () {
     });
 };
 
-$(function () {
-    $("form[name='answer']").find("input[type='submit']").click(addAnswer);
-    $(".qna-comment").find("button[type='submit']").click(deleteAnswer);
-});
-
 function deleteAnswer(event) {
     event.preventDefault();
 
-    var answerId = $(this).closest(".form-delete").find("input[name='answerId']").val();
-    var data = {"answerId" : answerId}
+    var deleteButton = $(this);
+    var deleteFormData = deleteButton.closest(".form-delete").serialize();
 
     $.ajax({
         url: "/api/qna/deleteAnswer"
-        , data : data
+        , data : deleteFormData
         , method : "POST"
         , dataType : "json"
-        , success : deleteSuccess
-    })
+        , success : function (result) {
+            if(result.status) {
+                deleteButton.closest(".article").remove();
+            }
+        }
+        , error : function () {
+            alert("댓글 삭제에 실패 했습니다.")
+        }
+    }).bind(this)
 }
 
 function addAnswer(event) {
@@ -33,37 +35,34 @@ function addAnswer(event) {
 
     var answerFormData = $("form[name='answer']").serialize();
 
-    //TODO remove
-    console.log("serialized data : ", answerFormData);
-
     $.ajax({
         url: "/api/qna/addAnswer"
         , data: answerFormData
         , method : "POST"
         , dataType : "json"
         , success : onSuccess
-        , error : onError
+        , error : function () {
+            alert("댓글 등록에 실패 했습니다.");
+        }
     })
 }
 
-function deleteSuccess(result) {
+function deleteSuccess(result, targetElement) {
 
     if(result.status) {
-
+        targetElement.closest(".article").remove();
     }
 }
 
 function onSuccess(result) {
-    //TODO remove
-    console.log("response data : ", result);
-
     var articleTemplate = jQuery("#answerTemplate").html();
     var template = articleTemplate.format(result.writer, new Date(result.createdDate), result.contents, result.answerId);
 
-    debugger
     $(".qna-comment-slipp-articles").prepend(template)
 }
 
-function onError() {
-  //TODO
-}
+$(function () {
+    $("form[name='answer']").find("input[type='submit']").click(addAnswer);
+    $(".qna-comment").on("click", ".form-delete", deleteAnswer);
+
+});
