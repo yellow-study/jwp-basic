@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import next.controller.HomeController;
 import next.controller.qna.AddAnswerApiController;
+import next.controller.qna.DeleteAnswerApiController;
 import next.controller.qna.ShowController;
 import next.controller.user.CreateUserController;
 import next.controller.user.ListUserController;
@@ -33,7 +34,8 @@ public class RequestMapping {
 		mappings.put("/users/updateForm", new UpdateFormUserController());
 		mappings.put("/users/update", new UpdateUserController());
 		mappings.put("/qna/show", new ShowController());
-		mappings.put("/api/qna/answer", new AddAnswerApiController());
+		mappings.put("/api/qna/addAnswer", new AddAnswerApiController());
+		mappings.put("/api/qna/deleteAnswer", new DeleteAnswerApiController());
 
 		logger.info("Initialized Request Mapping!");
 	}
