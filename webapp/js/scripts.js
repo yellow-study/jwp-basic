@@ -27,7 +27,7 @@ function deleteAnswer(event) {
         , error : function () {
             alert("댓글 삭제에 실패 했습니다.")
         }
-    }).bind(this)
+    })
 }
 
 function addAnswer(event) {
