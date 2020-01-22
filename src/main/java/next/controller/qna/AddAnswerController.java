@@ -2,6 +2,7 @@ package next.controller.qna;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import core.mvc.Controller;
+import core.mvc.view.View;
 import next.dao.AnswerDao;
 import next.model.Answer;
 
@@ -12,7 +13,7 @@ import java.io.PrintWriter;
 public class AddAnswerController implements Controller {
 
     @Override
-    public String execute(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public View execute(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         Answer answer = new Answer(req.getParameter("writer")
                 , req.getParameter("contents")
                 , Long.parseLong(req.getParameter("questionId")));

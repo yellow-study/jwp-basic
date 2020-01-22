@@ -28,24 +28,25 @@ function addAnswer(e) {
         var template = answerTemplate.format(json.writer, new Date(json.createdDatex), json.contents, json.answerId);
 
         jQuery(".qna-comment-slipp-articles").prepend(template);
-        // console.log("success");
       }
   })
 }
 
-jQuery(".qna-comment-slipp-articles").on("click", "link-delete-article", function(event) {
-    var target = jQuery(event.target).parent();
-    var id = target.serialize();
+jQuery(".qna-comment-slipp-articles").on("click", ".form-delete", function(event) {
+    event.preventDefault();
+
+    var answerId = jQuery(this).serialize();
 
     jQuery.ajax({
-        type : "delete"
-        , url : "/api/qna/deleteAnswer?" + id
+        type : "POST"
+        , url : "/api/qna/deleteAnswer"
         , dataType : "json"
+        , data : answerId
         , error : function () {
             console.log("error");
         }
         , success : function() {
-            target.closest(".article").remove();
+            jQuery(event.target).closest(".article").remove();
             console.log("delete success");
         }
     })
