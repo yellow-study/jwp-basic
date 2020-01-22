@@ -31,10 +31,11 @@ function addAnswer() {
 }
 
 function addAnswerSuccess(result) {
+    console.log(result);
     var articleTemplate = jQuery("#answerTemplate").html();
-    var template = articleTemplate.format(result.writer, new Date(result.createdDate), result.contents, result.answerId);
+    var template = articleTemplate.format(result.answer.writer, new Date(result.answer.createdDate), result.answer.contents, result.answer.answerId);
 
-    $(".qna-comment-slipp-articles").prepend(template)
+    $(".qna-comment-slipp-articles").prepend(template);
 }
 
 function deleteAnswer() {
