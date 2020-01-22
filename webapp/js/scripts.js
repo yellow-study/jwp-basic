@@ -8,8 +8,10 @@ String.prototype.format = function () {
     });
 };
 
-$(function () {
+jQuery(function () {
+    debugger;
     $("form[name='answer']").find("input[type='submit']").click(addAnswer);
+    $("button.link-delete-article").click(deleteAnswer);
 });
 
 function addAnswer() {
@@ -21,20 +23,45 @@ function addAnswer() {
     $.ajax({
         url: "/qna/addAnswer"
         , data: data
-        , method : "POST"
-        , dataType : "json"
-        , success : onSuccess
-        , error : onError
+        , method: "POST"
+        , dataType: "json"
+        , success: addAnswerSuccess
+        , error: onError
     })
 }
 
-function onSuccess(result) {
+function addAnswerSuccess(result) {
     var articleTemplate = jQuery("#answerTemplate").html();
     var template = articleTemplate.format(result.writer, new Date(result.createdDate), result.contents, result.answerId);
 
     $(".qna-comment-slipp-articles").prepend(template)
 }
 
-function onError() {
+function deleteAnswer() {
+    event.preventDefault();
+    var deleteButton = $(this);
+    var answerId = deleteButton.siblings("input[name='answerId']").val();
 
+    console.log(answerId);
+
+    $.ajax({
+        url: "/qna/deleteAnswer"
+        , data: {"answerId": answerId}
+        , method: "POST"
+        , dataType: "json"
+        , success: function (isSuccess) {
+            if(!isSuccess){
+                onError();
+                return;
+            }
+
+            deleteButton.closest(".article").remove();
+            alert("답변을 삭제했습니다.")
+        }
+        , error: onError
+    })
+}
+
+function onError() {
+    alert("다시 시도해주세요");
 }
