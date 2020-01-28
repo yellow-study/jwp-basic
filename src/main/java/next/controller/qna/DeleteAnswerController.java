@@ -7,21 +7,26 @@ package next.controller.qna;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import core.mvc.Controller;
+import core.mvc.View;
 import next.dao.AnswerDao;
 import next.model.Result;
+import next.view.JsonView;
 
 public class DeleteAnswerController implements Controller {
 	@Override
-	public String execute(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-		AnswerDao answerDao = new AnswerDao();
+	public View execute(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+		long answerId = Long.parseLong(req.getParameter("answerId"));
 
-		answerDao.delete(Long.parseLong(req.getParameter("answerId")));
+		try {
+			AnswerDao answerDao = new AnswerDao();
+			answerDao.delete(answerId);
 
-		resp.setContentType("application/json;charset=UTF-8");
-		resp.getWriter().print(new ObjectMapper().writeValueAsString(Result.ok()));
+			req.setAttribute("result", Result.ok());
+		} catch (Exception exception) {
+			req.setAttribute("result", Result.fail("fail to delete"));
+		}
 
-		return null;
+		return new JsonView();
 	}
 }
