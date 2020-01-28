@@ -1,12 +1,11 @@
-package next.view;
+package core.mvc;
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import core.mvc.View;
 
 public class JspView implements View {
 	private static final String DEFAULT_REDIRECT_PREFIX = "redirect:";
@@ -23,7 +22,10 @@ public class JspView implements View {
 			return;
 		}
 
-		request.setAttribute("model", model);
+		Set<String> keys = model.keySet();
+		for (String key : keys) {
+			request.setAttribute(key, model.get(key));
+		}
 
 		RequestDispatcher rd = request.getRequestDispatcher(url);
 		rd.forward(request, response);

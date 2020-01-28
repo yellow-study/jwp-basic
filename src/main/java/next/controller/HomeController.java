@@ -3,17 +3,17 @@ package next.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import core.mvc.Controller;
-import core.mvc.View;
+import core.mvc.AbstractController;
+import core.mvc.JspView;
+import core.mvc.ModelAndView;
 import next.dao.QuestionDao;
-import next.view.JspView;
 
-public class HomeController implements Controller {
+public class HomeController extends AbstractController {
 	@Override
-	public View execute(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+	public ModelAndView execute(HttpServletRequest req, HttpServletResponse resp) {
 		QuestionDao questionDao = new QuestionDao();
-		req.setAttribute("questions", questionDao.findAll());
 
-		return new JspView("home.jsp");
+		return new ModelAndView(new JspView("home.jsp"))
+			.addModel("questions", questionDao.findAll());
 	}
 }

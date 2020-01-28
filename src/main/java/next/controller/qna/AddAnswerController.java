@@ -3,15 +3,14 @@ package next.controller.qna;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import core.mvc.Controller;
-import core.mvc.View;
+import core.mvc.AbstractController;
+import core.mvc.ModelAndView;
 import next.dao.AnswerDao;
 import next.model.Answer;
-import next.view.JsonView;
 
-public class AddAnswerController implements Controller {
+public class AddAnswerController extends AbstractController {
 	@Override
-	public View execute(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+	public ModelAndView execute(HttpServletRequest req, HttpServletResponse resp) {
 		Long questionId = Long.parseLong(req.getParameter("questionId"));
 		String writer = req.getParameter("writer");
 		String contents = req.getParameter("contents");
@@ -21,8 +20,6 @@ public class AddAnswerController implements Controller {
 		AnswerDao answerDao = new AnswerDao();
 		answer = answerDao.insert(answer);
 
-		req.setAttribute("answer", answer);
-
-		return new JsonView();
+		return jsonView().addModel("answer", answer);
 	}
 }
