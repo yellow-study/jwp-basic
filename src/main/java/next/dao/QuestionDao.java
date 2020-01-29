@@ -14,6 +14,15 @@ import core.jdbc.RowMapper;
 import next.model.Question;
 
 public class QuestionDao {
+    public void updateCountOfComment(long questionId, int value) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        String sql = "UPDATE QUESTIONS " +
+            "SET countOfAnswer = countOfAnswer + ?" +
+            " WHERE questionId = ?";
+
+        jdbcTemplate.update(sql, value, questionId);
+    }
+
     public Question insert(Question question) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
         String sql = "INSERT INTO QUESTIONS " + 
