@@ -1,6 +1,7 @@
 package core.mvc;
 
 import next.controller.HomeController;
+import next.controller.api.QuestionListApiController;
 import next.controller.qna.*;
 import next.controller.user.*;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ public class RequestMapping {
         mappings.put("/qna/form", new FormController());
         mappings.put("/qna/create", new CreateController());
         mappings.put("/qna/show", new ShowController());
+        mappings.put("/api/qna/list", new QuestionListApiController());
         mappings.put("/api/qna/addAnswer", new AddAnswerController());
         mappings.put("/api/qna/deleteAnswer", new DeleteAnswerController());
 

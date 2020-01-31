@@ -1,23 +1,19 @@
 package next.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.List;
-
 import core.jdbc.JdbcTemplate;
 import core.jdbc.KeyHolder;
 import core.jdbc.PreparedStatementCreator;
 import core.jdbc.RowMapper;
 import next.model.Question;
 
+import java.sql.*;
+import java.util.List;
+
 public class QuestionDao {
     public Question insert(Question question) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        String sql = "INSERT INTO QUESTIONS " + 
-                "(writer, title, contents, createdDate) " + 
+        String sql = "INSERT INTO QUESTIONS " +
+                "(writer, title, contents, createdDate) " +
                 " VALUES (?, ?, ?, ?)";
         PreparedStatementCreator psc = new PreparedStatementCreator() {
             @Override
@@ -35,7 +31,37 @@ public class QuestionDao {
         jdbcTemplate.update(psc, keyHolder);
         return findById(keyHolder.getId());
     }
-    
+
+    public Question updateIncreaseCountOfAnswer(long questionId) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        String sql = "UPDATE QUESTIONS SET countOfAnswer = countOfAnswer + 1 " +
+                "WHERE questionId = ? ";
+        PreparedStatementCreator psc = con -> {
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setLong(1, questionId);
+            return pstmt;
+        };
+
+        KeyHolder keyHolder = new KeyHolder();
+        jdbcTemplate.update(psc, keyHolder);
+        return findById(keyHolder.getId());
+    }
+
+    public Question updateDecreaseCountOfAnswer(long questionId) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        String sql = "UPDATE QUESTIONS SET countOfAnswer = countOfAnswer - 1 " +
+                "WHERE questionId = ? ";
+        PreparedStatementCreator psc = con -> {
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setLong(1, questionId);
+            return pstmt;
+        };
+
+        KeyHolder keyHolder = new KeyHolder();
+        jdbcTemplate.update(psc, keyHolder);
+        return findById(keyHolder.getId());
+    }
+
     public List<Question> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
         String sql = "SELECT questionId, writer, title, createdDate, countOfAnswer FROM QUESTIONS "
