@@ -1,25 +1,31 @@
 package next.controller.qna;
 
-import core.mvc.AbstractController;
-import core.mvc.ModelAndView;
-import next.dao.QuestionDao;
-import next.model.Question;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import core.mvc.AbstractController;
+import core.mvc.ModelAndView;
+import next.controller.UserSessionUtils;
+import next.dao.QuestionDao;
+import next.model.Question;
+
+/**
+ * @author sungryul-yook on 2020-01-29.
+ */
 public class CreateQuestionController extends AbstractController {
-    private QuestionDao questionDao = new QuestionDao();
+	private QuestionDao questionDao = new QuestionDao();
 
-    @Override
-    public ModelAndView execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Question question = new Question(
-                request.getParameter("writer"),
-                request.getParameter("title"),
-                request.getParameter("contents")
-        );
+	@Override
+	public ModelAndView execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		if (UserSessionUtils.isLogined(request.getSession())) {
+			String writer = request.getParameter("writer");
+			String title = request.getParameter("title");
+			String contents = request.getParameter("contents");
 
-        questionDao.insert(question);
-        return jspView("redirect:/");
-    }
+			questionDao.insert(new Question(writer, title, contents));
+		}
+
+		response.sendRedirect("/");
+		return jsonView();
+	}
 }

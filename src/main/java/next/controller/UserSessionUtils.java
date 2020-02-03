@@ -33,4 +33,8 @@ public class UserSessionUtils {
 
         return user.isSameUser(getUserFromSession(session));
     }
+
+    public static boolean isNotLogined(HttpSession session) {
+        return !isLogined(session);
+    }
 }

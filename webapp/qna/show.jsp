@@ -53,30 +53,30 @@
 
 				<div class="qna-comment">
 					<div class="qna-comment-slipp">
-						<p class="qna-comment-count"><strong>${question.countOfComment}</strong>개의 의견</p>
+						<p class="qna-comment-count"><strong id="countOfComment">${question.countOfComment}</strong>개의 의견</p>
 						<div class="qna-comment-slipp-articles">
-							<c:forEach items="${answers}" var="each">
+							<c:forEach var="comment" items="${answers}">
 								<article class="article">
 									<div class="article-header">
 										<div class="article-header-thumb">
 											<img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
 										</div>
 										<div class="article-header-text">
-											${each.writer}
-											<div class="article-header-time">${each.createdDate}</div>
+											${comment.writer}
+											<div class="article-header-time">${comment.createdDate}</div>
 										</div>
 									</div>
 									<div class="article-doc comment-doc">
-										<p>${each.contents}</p>
+										<p>${comment.contents}</p>
 									</div>
 									<div class="article-util">
 										<ul class="article-util-list">
 											<li>
-												<a class="link-modify-article" href="/api/qna/updateAnswer?answerId=5">수정</a>
+												<a class="link-modify-article" href="/api/qna/updateAnswer?answerId=${comment.answerId}">수정</a>
 											</li>
 											<li>
-												<form class="form-delete" action="/api/qna/deleteAnswer" method="POST">
-													<input type="hidden" name="answerId" value="5">
+												<form class="form-delete commentRemoveForm" action="/api/qna/deleteAnswer" method="POST">
+													<input type="hidden" name="answerId" value="${comment.answerId}">
 													<button type="submit" class="link-delete-article">삭제</button>
 												</form>
 											</li>

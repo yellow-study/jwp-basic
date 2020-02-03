@@ -21,10 +21,33 @@ function onSuccess(json, status){
   var answerTemplate = $("#answerTemplate").html();
   var template = answerTemplate.format(answer.writer, new Date(answer.createdDate), answer.contents, answer.answerId, answer.answerId);
   $(".qna-comment-slipp-articles").prepend(template);
+  $("#countOfComment").html(Number($("#countOfComment").html()) + 1);
 }
 
 function onError(xhr, status) {
   alert("error");
+}
+
+$(".commentRemoveForm button").click(removeAnswer);
+
+function removeAnswer(event) {
+  event.preventDefault();
+
+  var queryString = $(event.target).parent().serialize();
+
+  $.ajax({
+    type : 'post',
+    url : '/api/qna/deleteAnswer',
+    data : queryString,
+    dataType : 'json',
+    error: function() {
+      alert("error");
+    },
+    success : function() {
+      $(event.target).closest("article").remove();
+      $("#countOfComment").html(Number($("#countOfComment").html()) - 1);
+    },
+  });
 }
 
 String.prototype.format = function() {
