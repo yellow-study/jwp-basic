@@ -29,7 +29,7 @@ public class DispatcherServlet extends HttpServlet {
         String requestUri = req.getRequestURI();
         logger.debug("Method : {}, Request URI : {}", req.getMethod(), requestUri);
 
-        Controller controller = rm.findController(req.getRequestURI());
+        Controller controller = rm.findController(requestUri);
         ModelAndView mav;
         try {
             mav = controller.execute(req, resp);
