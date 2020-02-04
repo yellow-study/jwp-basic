@@ -1,5 +1,7 @@
 // $(".qna-comment").on("click", ".answerWrite input[type=submit]", addAnswer);
 $(".answerWrite input[type=submit]").click(addAnswer);
+$(".commentRemoveForm button").click(removeAnswer);
+$(".updateQuestionForm button").click(updateQuestion);
 
 function addAnswer(e) {
   e.preventDefault();
@@ -28,8 +30,6 @@ function onError(xhr, status) {
   alert("error");
 }
 
-$(".commentRemoveForm button").click(removeAnswer);
-
 function removeAnswer(event) {
   event.preventDefault();
 
@@ -50,6 +50,24 @@ function removeAnswer(event) {
   });
 }
 
+function updateQuestion (event) {
+  event.preventDefault();
+
+  var queryString = $(".updateQuestionForm").serialize();
+  var questionId = $("input[name=questionId]").val();
+
+  $.ajax({
+    type : 'post',
+    url : '/api/qna/updateQuestion',
+    data : queryString,
+    dataType : 'json',
+    error: onError,
+    success : function() {
+      alert('수정하였습니다');
+      location.href = "/qna/show?questionId=" + questionId;
+    }
+  });
+}
 String.prototype.format = function() {
   var args = arguments;
   return this.replace(/{(\d+)}/g, function(match, number) {

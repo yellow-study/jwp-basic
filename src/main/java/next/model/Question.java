@@ -19,6 +19,10 @@ public class Question {
         this(0, writer, title, contents, new Date(), 0);
     }
 
+    public Question(long questionId, String writer, String title, String contents) {
+        this(questionId, writer, title, contents, new Date(), 0);
+    }
+
     public Question(long questionId, String writer, String title, String contents, Date createdDate,
             int countOfComment) {
         this.questionId = questionId;
@@ -80,8 +84,6 @@ public class Question {
         if (getClass() != obj.getClass())
             return false;
         Question other = (Question) obj;
-        if (questionId != other.questionId)
-            return false;
-        return true;
+        return questionId == other.questionId;
     }
 }
