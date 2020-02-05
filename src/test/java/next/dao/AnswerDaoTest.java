@@ -1,9 +1,11 @@
 package next.dao;
 
+import core.web.filter.Controller;
 import next.model.Answer;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.reflections.Reflections;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
@@ -25,5 +27,19 @@ public class AnswerDaoTest {
         AnswerDao dut = new AnswerDao();
         Answer answer = dut.insert(expected);
         System.out.println("Answer : " + answer);
+    }
+
+
+    @Test
+    public void annotationTest() {
+        //controller annotation 정보 가져오기
+        Reflections ref = new Reflections();
+
+        for (Class<?> cl : ref.getTypesAnnotatedWith(Controller.class)) {
+            Controller controller = cl.getAnnotation(Controller.class);
+            System.out.printf("Found class: %s, with meta name: %s%n",
+                    cl.getSimpleName(), controller.value());
+        }
+
     }
 }
