@@ -21,7 +21,13 @@ public class DispatcherServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         rm = new RequestMapping();
-        rm.initMapping();
+        try {
+            rm.initMapping();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
