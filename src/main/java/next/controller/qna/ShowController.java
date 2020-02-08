@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import core.annotations.Controller;
 import next.dao.AnswerDao;
 import next.dao.QuestionDao;
 import next.model.Answer;
@@ -12,6 +13,7 @@ import next.model.Question;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 
+@Controller("/qna/show")
 public class ShowController extends AbstractController {
     private QuestionDao questionDao = new QuestionDao();
     private AnswerDao answerDao = new AnswerDao();

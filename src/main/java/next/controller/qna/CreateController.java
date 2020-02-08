@@ -1,5 +1,6 @@
 package next.controller.qna;
 
+import core.annotations.Controller;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 import next.controller.UserSessionUtils;
@@ -10,6 +11,7 @@ import next.model.User;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@Controller("/qna/create")
 public class CreateController extends AbstractController {
     private QuestionDao questionDao = new QuestionDao();
 
@@ -20,7 +22,7 @@ public class CreateController extends AbstractController {
         if (user == null) {
             return jspView("redirect:/users/loginForm");
         } else {
-            Question question = new Question(user.getName(), req.getParameter("title"), req.getParameter("contents"));
+            Question question = new Question(user.getName(), req.getParameter("title"), req.getParameter("contents"), user.getUserId());
             questionDao.insert(question);
 
             return jspView("redirect:/");

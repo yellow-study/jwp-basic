@@ -1,6 +1,7 @@
 // $(".qna-comment").on("click", ".answerWrite input[type=submit]", addAnswer);
 $(".answerWrite input[type=submit]").click(addAnswer);
 $(".link-delete-answer").click(deleteAnswer);
+$("#modifyArticle").click(modifyArticle);
 
 function addAnswer(e) {
     e.preventDefault();
@@ -13,7 +14,7 @@ function addAnswer(e) {
         data: queryString,
         dataType: 'json',
         error: onError,
-        success: onSuccess,
+        success: onSuccess
     });
 }
 
@@ -46,9 +47,28 @@ function deleteAnswer(e) {
         error: onError,
         success: function () {
             $this.closest(".comment").remove();
-        },
+        }
     });
 
+}
+
+function modifyArticle() {
+    var questionId = $("#questionId").val();
+    var userId = $("#userId").val();
+
+    $.ajax({
+        type: 'post',
+        url: '/qna/modifyForm',
+        data: {
+            "questionId" : questionId
+            ,"userId" : userId
+        },
+        dataType: 'json',
+        error: onError,
+        success: function () {
+
+        }
+    });
 }
 
 String.prototype.format = function () {

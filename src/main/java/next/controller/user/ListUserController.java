@@ -3,11 +3,13 @@ package next.controller.user;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import core.annotations.Controller;
 import next.controller.UserSessionUtils;
 import next.dao.UserDao;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 
+@Controller("/users")
 public class ListUserController extends AbstractController {
     private UserDao userDao = new UserDao();
 

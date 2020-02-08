@@ -1,5 +1,6 @@
 package next.controller.qna;
 
+import core.annotations.Controller;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 import next.dao.AnswerDao;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@Controller("/api/qna/addAnswer")
 public class AddAnswerController extends AbstractController {
     private static final Logger log = LoggerFactory.getLogger(AddAnswerController.class);
 

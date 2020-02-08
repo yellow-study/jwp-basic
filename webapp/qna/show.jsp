@@ -12,6 +12,7 @@
 
 <div class="container" id="main">
     <input type="hidden" id="questionId" value="${question.questionId}">
+    <input type="hidden" id="userId" value="${question.userId}">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default">
             <header class="qna-header">
@@ -38,7 +39,7 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="#">수정</a>
+                                <a id="modifyArticle" class="link-modify-article">수정</a>
                             </li>
                             <li>
                                 <form class="form-delete" action="#" method="POST">
