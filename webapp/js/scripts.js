@@ -20,7 +20,12 @@ function onSuccess(json, status){
   var answer = json.answer;
   var answerTemplate = $("#answerTemplate").html();
   var template = answerTemplate.format(answer.writer, new Date(answer.createdDate), answer.contents, answer.answerId, answer.answerId);
-  $(".qna-comment-slipp-articles").prepend(template);
+  jQuery(".qna-comment-slipp-articles").prepend(template);
+  var countOfComment = jQuery("#count-of-comment")[0].innerText;
+  jQuery("#count-of-comment")[0].innerText = Number(countOfComment) + 1;
+
+  jQuery("#writer").val("");
+  jQuery("#contents").val("");
 }
 
 function onError(xhr, status) {
