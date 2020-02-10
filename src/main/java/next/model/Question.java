@@ -5,6 +5,8 @@ import java.util.Date;
 public class Question {
     private long questionId;
 
+    private String userId;
+
     private String writer;
 
     private String title;
@@ -15,13 +17,46 @@ public class Question {
 
     private int countOfComment;
 
-    public Question(String writer, String title, String contents) {
-        this(0, writer, title, contents, new Date(), 0);
+    public Question() {
+
     }
 
-    public Question(long questionId, String writer, String title, String contents, Date createdDate,
-            int countOfComment) {
+    public Question(String userId, String writer, String title, String contents) {
+        this(0, userId, writer, title, contents, new Date(), 0);
+    }
+
+    public void setQuestionId(long questionId) {
         this.questionId = questionId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setWriter(String writer) {
+        this.writer = writer;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContents(String contents) {
+        this.contents = contents;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public void setCountOfComment(int countOfComment) {
+        this.countOfComment = countOfComment;
+    }
+
+    public Question(long questionId, String userId, String writer, String title, String contents, Date createdDate,
+                    int countOfComment) {
+        this.questionId = questionId;
+        this.userId = userId;
         this.writer = writer;
         this.title = title;
         this.contents = contents;
@@ -31,6 +66,10 @@ public class Question {
 
     public long getQuestionId() {
         return questionId;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getWriter() {
@@ -59,7 +98,7 @@ public class Question {
 
     @Override
     public String toString() {
-        return "Question [questionId=" + questionId + ", writer=" + writer + ", title=" + title + ", contents="
+        return "Question [questionId=" + questionId + ", userId=" + userId + ", writer=" + writer + ", title=" + title + ", contents="
                 + contents + ", createdDate=" + createdDate + ", countOfComment=" + countOfComment + "]";
     }
 

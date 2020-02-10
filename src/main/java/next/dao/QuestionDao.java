@@ -23,14 +23,15 @@ public class QuestionDao {
 
     public Question insert(Question question) {
         String sql = "INSERT INTO QUESTIONS " +
-                "(writer, title, contents, createdDate) " +
-                " VALUES (?, ?, ?, ?)";
+                "(userId, writer, title, contents, createdDate) " +
+                " VALUES (?, ?, ?, ?, ?)";
         PreparedStatementCreator psc = con -> {
             PreparedStatement pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, question.getWriter());
-            pstmt.setString(2, question.getTitle());
-            pstmt.setString(3, question.getContents());
-            pstmt.setTimestamp(4, new Timestamp(question.getTimeFromCreateDate()));
+            pstmt.setString(1, question.getUserId());
+            pstmt.setString(2, question.getWriter());
+            pstmt.setString(3, question.getTitle());
+            pstmt.setString(4, question.getContents());
+            pstmt.setTimestamp(5, new Timestamp(question.getTimeFromCreateDate()));
             return pstmt;
         };
 
@@ -40,22 +41,31 @@ public class QuestionDao {
     }
 
     public List<Question> findAll() {
-        String sql = "SELECT questionId, writer, title, createdDate, countOfAnswer FROM QUESTIONS "
+        String sql = "SELECT questionId, userId, writer, title, createdDate, countOfAnswer FROM QUESTIONS "
                 + "order by questionId desc";
 
-        RowMapper<Question> rm = rs -> new Question(rs.getLong("questionId"), rs.getString("writer"), rs.getString("title"), null,
+        RowMapper<Question> rm = rs -> new Question(rs.getLong("questionId"), rs.getString("userId"), rs.getString("writer"), rs.getString("title"), null,
                 rs.getTimestamp("createdDate"), rs.getInt("countOfAnswer"));
 
         return jdbcTemplate.query(sql, rm);
     }
 
     public Question findById(long questionId) {
-        String sql = "SELECT questionId, writer, title, contents, createdDate, countOfAnswer FROM QUESTIONS "
+        String sql = "SELECT questionId, userId, writer, title, contents, createdDate, countOfAnswer FROM QUESTIONS "
                 + "WHERE questionId = ?";
 
-        RowMapper<Question> rm = rs -> new Question(rs.getLong("questionId"), rs.getString("writer"), rs.getString("title"),
+        RowMapper<Question> rm = rs -> new Question(rs.getLong("questionId"), rs.getString("userId"), rs.getString("writer"), rs.getString("title"),
                 rs.getString("contents"), rs.getTimestamp("createdDate"), rs.getInt("countOfAnswer"));
 
         return jdbcTemplate.queryForObject(sql, rm, questionId);
+    }
+
+    public void update(Question question) {
+        String sql = "UPDATE QUESTIONS " +
+                "SET title = ?, " +
+                "contents = ? " +
+                "WHERE questionId = ?";
+
+        jdbcTemplate.update(sql, question.getTitle(), question.getContents(), question.getQuestionId());
     }
 }
