@@ -9,7 +9,7 @@ import next.dao.QuestionDao;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class DeleteQuestionController extends AbstractController {
+public class DeleteQuestionWebController extends AbstractController {
     private QuestionDao questionDao = new QuestionDao();
     private AnswerDao answerDao = new AnswerDao();
     private QuestionBo questionBo = new QuestionBo(questionDao, answerDao);
@@ -17,8 +17,8 @@ public class DeleteQuestionController extends AbstractController {
     @Override
     public ModelAndView execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
         long questionId = Long.parseLong(request.getParameter("questionId"));
-        boolean removed = questionBo.delete(questionId);
+        questionBo.delete(questionId);
 
-        return jsonView().addObject("result", removed);
+        return jspView("redirect:/");
     }
 }
