@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import core.annotation.RequestMapping;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 import next.controller.UserSessionUtils;
@@ -12,6 +13,7 @@ import next.model.User;
 /**
  * @author sungryul-yook on 2020-01-29.
  */
+@RequestMapping(path = "/qna/form")
 public class QuestionFormController extends AbstractController {
 
 	@Override

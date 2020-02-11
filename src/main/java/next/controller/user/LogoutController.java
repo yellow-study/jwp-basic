@@ -4,9 +4,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import core.annotation.RequestMapping;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 
+@RequestMapping(path = "/users/logout")
 public class LogoutController extends AbstractController {
     @Override
     public ModelAndView execute(HttpServletRequest request, HttpServletResponse response) throws Exception {

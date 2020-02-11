@@ -15,13 +15,12 @@ import org.slf4j.LoggerFactory;
 public class DispatcherServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
-
-    private RequestMapping rm;
+    private RequestMappingHandler requestMappingHandler;
 
     @Override
-    public void init() throws ServletException {
-        rm = new RequestMapping();
-        rm.initMapping();
+    public void init() {
+        requestMappingHandler = new RequestMappingHandler();
+        requestMappingHandler.init();
     }
 
     @Override
@@ -29,7 +28,7 @@ public class DispatcherServlet extends HttpServlet {
         String requestUri = req.getRequestURI();
         logger.debug("Method : {}, Request URI : {}", req.getMethod(), requestUri);
 
-        Controller controller = rm.findController(req.getRequestURI());
+        Controller controller = requestMappingHandler.findController(req.getRequestURI());
         ModelAndView mav;
         try {
             mav = controller.execute(req, resp);

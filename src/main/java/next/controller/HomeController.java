@@ -3,10 +3,12 @@ package next.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import core.annotation.RequestMapping;
 import next.dao.QuestionDao;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 
+@RequestMapping(path = "/")
 public class HomeController extends AbstractController {
     private QuestionDao questionDao = new QuestionDao();
 

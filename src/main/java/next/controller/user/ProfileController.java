@@ -3,10 +3,12 @@ package next.controller.user;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import core.annotation.RequestMapping;
 import next.dao.UserDao;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 
+@RequestMapping(path = "/users/profile")
 public class ProfileController extends AbstractController {
     private UserDao userDao = new UserDao();
 

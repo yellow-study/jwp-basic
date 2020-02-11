@@ -1,5 +1,6 @@
 package next.controller.qna;
 
+import core.annotation.RequestMapping;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 import next.controller.UserSessionUtils;
@@ -12,6 +13,7 @@ import next.model.User;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@RequestMapping(path = "/api/qna/updateQuestion")
 public class UpdateQuestionController extends AbstractController {
     private QuestionDao questionDao = new QuestionDao();
     private UserDao userDao = new UserDao();

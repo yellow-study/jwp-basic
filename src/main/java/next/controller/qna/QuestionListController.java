@@ -3,6 +3,7 @@ package next.controller.qna;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import core.annotation.RequestMapping;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 import next.dao.QuestionDao;
@@ -10,6 +11,7 @@ import next.dao.QuestionDao;
 /**
  * @author sungryul-yook on 2020-01-29.
  */
+@RequestMapping(path = "/api/qna/list")
 public class QuestionListController extends AbstractController {
 
 	private QuestionDao questionDao = new QuestionDao();

@@ -3,6 +3,7 @@ package next.controller.qna;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import core.annotation.RequestMapping;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 import next.controller.UserSessionUtils;
@@ -12,6 +13,7 @@ import next.model.Question;
 /**
  * @author sungryul-yook on 2020-01-29.
  */
+@RequestMapping(path = "/qna/create")
 public class CreateQuestionController extends AbstractController {
 	private QuestionDao questionDao = new QuestionDao();
 
