@@ -5,6 +5,8 @@ import java.util.Date;
 public class Answer {
     private long answerId;
 
+    private String userId;
+
     private String writer;
 
     private String contents;
@@ -13,12 +15,13 @@ public class Answer {
 
     private long questionId;
 
-    public Answer(String writer, String contents, long questionId) {
-        this(0, writer, contents, new Date(), questionId);
+    public Answer(String userId, String writer, String contents, long questionId) {
+        this(0, userId, writer, contents, new Date(), questionId);
     }
 
-    public Answer(long answerId, String writer, String contents, Date createdDate, long questionId) {
+    public Answer(long answerId, String userId, String writer, String contents, Date createdDate, long questionId) {
         this.answerId = answerId;
+        this.userId = userId;
         this.writer = writer;
         this.contents = contents;
         this.createdDate = createdDate;
@@ -31,6 +34,10 @@ public class Answer {
 
     public String getWriter() {
         return writer;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getContents() {
