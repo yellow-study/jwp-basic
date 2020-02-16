@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import next.controller.qna.AddQuestionController;
+import next.controller.qna.ApiQuestionListController;
 import next.controller.qna.DeleteAnswerController;
 import next.controller.qna.ShowController;
 import next.controller.user.CreateUserController;
@@ -37,6 +38,7 @@ public class RequestMapping {
         //mappings.put("/api/qna/addAnswer", new AddAnswerController());
         mappings.put("/qna/create", new AddQuestionController());
         mappings.put("/api/qna/deleteAnswer", new DeleteAnswerController());
+        mappings.put("/api/qna/list", new ApiQuestionListController());
 
         Reflections ref = new Reflections();
 
