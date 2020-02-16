@@ -68,4 +68,25 @@ public class QuestionDao {
 
         return jdbcTemplate.queryForObject(sql, rm, questionId);
     }
+
+    public int selectCountOfAnswerById(long questionId) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        String sql = "SELECT countOfAnswer FROM QUESTIONS "
+            + "WHERE questionId = ?";
+
+        RowMapper<Integer> rm = new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs) throws SQLException {
+                return rs.getInt("countOfAnswer");
+            }
+        };
+
+        return jdbcTemplate.queryForObject(sql, rm, questionId);
+    }
+
+    public void updateCountOfAnswer(int currentCountOfAnswer,long questionId) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        String sql = "UPDATE QUESTIONS set countOfAnswer = ? WHERE questionId = ?";
+        jdbcTemplate.update(sql, currentCountOfAnswer, questionId);
+    }
 }
