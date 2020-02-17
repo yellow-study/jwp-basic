@@ -1,5 +1,6 @@
 package next.controller.qna;
 
+import core.annotation.Controller;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 import next.controller.UserSessionUtils;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpSession;
 /**
  * @author sungryul-yook on 2020-01-29.
  */
+@Controller("/qna/form")
 public class QuestionFormController extends AbstractController {
 
 	@Override

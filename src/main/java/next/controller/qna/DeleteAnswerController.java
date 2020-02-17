@@ -1,16 +1,18 @@
 package next.controller.qna;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import core.annotation.Controller;
+import core.jdbc.DataAccessException;
+import core.mvc.AbstractController;
+import core.mvc.ModelAndView;
 import next.dao.AnswerDao;
 import next.dao.QuestionDao;
 import next.model.Answer;
 import next.model.Result;
-import core.jdbc.DataAccessException;
-import core.mvc.AbstractController;
-import core.mvc.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@Controller("/api/qna/deleteAnswer")
 public class DeleteAnswerController extends AbstractController {
     private AnswerDao answerDao = new AnswerDao();
     private QuestionDao questionDao = new QuestionDao();

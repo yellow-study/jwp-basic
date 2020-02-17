@@ -1,5 +1,6 @@
 package next.controller.qna;
 
+import core.annotation.Controller;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 import next.controller.UserSessionUtils;
@@ -9,6 +10,7 @@ import next.model.Question;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@Controller("/qna/modify")
 public class QuestionModifyController extends AbstractController {
     private QuestionDao questionDao = new QuestionDao();
 

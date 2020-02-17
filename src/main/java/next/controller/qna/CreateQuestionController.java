@@ -1,5 +1,6 @@
 package next.controller.qna;
 
+import core.annotation.Controller;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 import next.controller.UserSessionUtils;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author sungryul-yook on 2020-01-29.
  */
+@Controller("/qna/create")
 public class CreateQuestionController extends AbstractController {
 	private QuestionDao questionDao = new QuestionDao();
 

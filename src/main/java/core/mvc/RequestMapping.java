@@ -1,12 +1,11 @@
 package core.mvc;
 
 import next.controller.HomeController;
-import next.controller.qna.QuestionModifyFormController;
-import next.controller.qna.*;
 import next.controller.user.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +14,12 @@ public class RequestMapping {
     private Map<String, Controller> mappings = new HashMap<>();
 
     void initMapping() {
+        Class controllerClass = core.annotation.Controller.class;
+        Annotation[] annotations = controllerClass.getAnnotations();
+        for (Annotation annotation : annotations) {
+            mappings.put((core.annotation.Controller) annotation).value(), )
+        }
+
         mappings.put("/", new HomeController());
         mappings.put("/users/form", new ForwardController("/user/form.jsp"));
         mappings.put("/users/loginForm", new ForwardController("/user/login.jsp"));
@@ -25,16 +30,6 @@ public class RequestMapping {
         mappings.put("/users/create", new CreateUserController());
         mappings.put("/users/updateForm", new UpdateFormUserController());
         mappings.put("/users/update", new UpdateUserController());
-        mappings.put("/qna/form", new QuestionFormController());
-        mappings.put("/qna/modifyForm", new QuestionModifyFormController());
-        mappings.put("/qna/modify", new QuestionModifyController());
-        mappings.put("/qna/show", new ShowController());
-        mappings.put("/qna/create", new CreateQuestionController());
-        mappings.put("/api/qna/addAnswer", new AddAnswerController());
-        mappings.put("/api/qna/deleteAnswer", new DeleteAnswerController());
-        mappings.put("/api/qna/list", new QuestionListController());
-        mappings.put("/qna/deleteQuestion", new DeleteQuestionController());
-        mappings.put("/api/qna/deleteQuestion", new DeleteQuestionAPIController());
 
         logger.info("Initialized Request Mapping!");
     }
