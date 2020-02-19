@@ -20,7 +20,7 @@ public class CreateController extends AbstractController {
         if (user == null) {
             return jspView("redirect:/users/loginForm");
         } else {
-            Question question = new Question(user.getName(), req.getParameter("title"), req.getParameter("contents"));
+            Question question = new Question(user.getName(), req.getParameter("title"), req.getParameter("contents"), req.getParameter("writerId"));
             questionDao.insert(question);
 
             return jspView("redirect:/");

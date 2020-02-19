@@ -39,8 +39,8 @@ function deleteAnswer(e) {
         type: 'post',
         url: '/api/qna/deleteAnswer',
         data: {
-            "answerId" : answerId
-            ,"questionId" : questionId
+            "answerId": answerId
+            , "questionId": questionId
         },
         dataType: 'json',
         error: onError,

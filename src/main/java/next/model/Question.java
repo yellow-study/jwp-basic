@@ -15,18 +15,21 @@ public class Question {
 
     private int countOfComment;
 
-    public Question(String writer, String title, String contents) {
-        this(0, writer, title, contents, new Date(), 0);
+    private String writerId;
+
+    public Question(String writer, String title, String contents, String writerId) {
+        this(0, writer, title, contents, new Date(), 0, writerId);
     }
 
     public Question(long questionId, String writer, String title, String contents, Date createdDate,
-            int countOfComment) {
+            int countOfComment, String writerId) {
         this.questionId = questionId;
         this.writer = writer;
         this.title = title;
         this.contents = contents;
         this.createdDate = createdDate;
         this.countOfComment = countOfComment;
+        this.writerId = writerId;
     }
 
     public long getQuestionId() {
@@ -55,6 +58,14 @@ public class Question {
 
     public int getCountOfComment() {
         return countOfComment;
+    }
+
+    public void setWriterId(String writerId) {
+        this.writerId = writerId;
+    }
+
+    public String getWriterId() {
+        return this.writerId;
     }
 
     @Override
