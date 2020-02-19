@@ -27,7 +27,7 @@ public class AddAnswerController extends AbstractController {
         log.debug("answer : {}", answer);
 
         Answer savedAnswer = answerDao.insert(answer);
-        questionDao.updateCountOfAnswer(questionId);
+        questionDao.updateCountOfAnswer(true, questionId);
         return jsonView().addObject("answer", savedAnswer);
     }
 }

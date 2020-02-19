@@ -3,6 +3,7 @@ package next.controller.qna;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 import core.web.filter.Controller;
+import next.controller.UserSessionUtils;
 import next.dao.QuestionDao;
 import next.model.Question;
 import org.slf4j.Logger;
@@ -19,11 +20,15 @@ public class CreateController extends AbstractController {
 
     @Override
     public ModelAndView execute(HttpServletRequest req, HttpServletResponse response) throws Exception {
+        if (UserSessionUtils.isLogined(req.getSession())) {
+            return jspView("redirect:/users/loginForm");
+        }
+
         Question question = new Question(req.getParameter("writer"), req.getParameter("title"),
                 req.getParameter("contents"));
         log.debug("question : {}", question);
 
         Question savedQuestion = questionDao.insert(question);
-        return jspView("/");
+        return jspView("redirect:/");
     }
 }

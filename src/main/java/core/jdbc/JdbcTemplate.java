@@ -8,6 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JdbcTemplate {
+    private  static JdbcTemplate jdbcTemplate = new JdbcTemplate();
+
+    public static JdbcTemplate getJdbcTemplate () {
+        return jdbcTemplate;
+    }
+
     public void update(String sql, PreparedStatementSetter pss) throws DataAccessException {
         try (Connection conn = ConnectionManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {

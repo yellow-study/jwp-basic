@@ -14,8 +14,9 @@ import core.jdbc.RowMapper;
 import next.model.Question;
 
 public class QuestionDao {
+    private JdbcTemplate jdbcTemplate = JdbcTemplate.getJdbcTemplate();
+
     public Question insert(Question question) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate();
         String sql = "INSERT INTO QUESTIONS " + 
                 "(writer, title, contents, createdDate) " + 
                 " VALUES (?, ?, ?, ?)";
@@ -37,7 +38,6 @@ public class QuestionDao {
     }
     
     public List<Question> findAll() {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate();
         String sql = "SELECT questionId, writer, title, createdDate, countOfAnswer FROM QUESTIONS "
                 + "order by questionId desc";
 
@@ -54,7 +54,6 @@ public class QuestionDao {
     }
 
     public Question findById(long questionId) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate();
         String sql = "SELECT questionId, writer, title, contents, createdDate, countOfAnswer FROM QUESTIONS "
                 + "WHERE questionId = ?";
 
@@ -69,9 +68,15 @@ public class QuestionDao {
         return jdbcTemplate.queryForObject(sql, rm, questionId);
     }
 
-    public void updateCountOfAnswer(long questionId) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        String sql = "UPDATE QUESTIONS SET countOfAnswer = countOfAnswer + 1 WHERE questionId = ?";
+    public void updateCountOfAnswer(boolean isAddedAnswer, long questionId) {
+        String sql = "UPDATE QUESTIONS SET countOfAnswer = countOfAnswer ";
+        if(isAddedAnswer){
+            sql += "+1";
+        } else {
+            sql += "-1";
+        }
+        sql += "WHERE questionId = ?";
+
         jdbcTemplate.update(sql, questionId);
     }
 }
