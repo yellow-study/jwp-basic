@@ -36,8 +36,9 @@
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">
+                            <c:if test="${isSameUser}">
                             <li>
-                                <a class="link-modify-article" href="#">수정</a>
+                                <a class="link-modify-article" href="/qna/modify/form?questionId=${question.questionId}">수정</a>
                             </li>
                             <li>
                                 <form class="form-delete" action="#" method="POST">
@@ -45,10 +46,12 @@
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
                             </li>
+                            </c:if>
                             <li>
                                 <a class="link-modify-article" href="/">목록</a>
                             </li>
                         </ul>
+
                     </div>
                 </article>
 
@@ -84,7 +87,7 @@
                                                     <%--													<input type="hidden" name="answerId" value="${answer.answerId}">--%>
                                                     <%--													<button type="submit" class="link-delete-article">삭제</button>--%>
                                                     <%--												</form>--%>
-                                                <a class="link-modify-article"
+                                                <a class="link-modify-article" id="deleteAnswer"
                                                    data-answerId="${answer.answerId}">삭제</a>
                                             </li>
                                         </ul>
@@ -133,7 +136,7 @@
                     <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
                 </li>
                 <li>
-                    <a class="link-modify-article" data-answerId="{3}">삭제</a>
+                    <a class="link-modify-article" id="deleteAnswer" data-answerId="{3}">삭제</a>
                 </li>
             </ul>
         </div>
