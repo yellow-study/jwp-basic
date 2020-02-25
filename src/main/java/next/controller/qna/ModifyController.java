@@ -1,3 +1,7 @@
+/**
+ * Copyright 2020 Naver Corp. All rights Reserved.
+ * Naver PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ */
 package next.controller.qna;
 
 import java.util.List;
@@ -14,7 +18,7 @@ import next.dao.UserDao;
 import next.model.Answer;
 import next.model.Question;
 
-public class ShowController extends AbstractController {
+public class ModifyController extends AbstractController {
 	private QuestionDao questionDao = new QuestionDao();
 	private AnswerDao answerDao = new AnswerDao();
 	private UserDao userDao = new UserDao();
@@ -23,14 +27,16 @@ public class ShowController extends AbstractController {
 	public ModelAndView execute(HttpServletRequest req, HttpServletResponse response) throws Exception {
 		Long questionId = Long.parseLong(req.getParameter("questionId"));
 
-		Question question = questionDao.findById(questionId);
+		Question question = new Question(questionId, req.getParameter("title"), req.getParameter("contents"));
+		questionDao.update(question);
 		List<Answer> answers = answerDao.findAllByQuestionId(questionId);
 
-		ModelAndView mav = jspView("/qna/show.jsp");
+		Question updatedQuestion = questionDao.findById(questionId);
 
-		mav.addObject("question", question);
+		ModelAndView mav = jspView("/qna/show.jsp");
+		mav.addObject("question", updatedQuestion);
 		mav.addObject("answers", answers);
-		mav.addObject("isSameUser", UserSessionUtils.isSameUser(req.getSession(), userDao.findByUserId(question.getWriterId())));
+		mav.addObject("isSameUser", UserSessionUtils.isSameUser(req.getSession(), userDao.findByUserId(updatedQuestion.getWriterId())));
 
 		return mav;
 	}
